@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>主神空间 - 无限流恋爱游戏</title>
+    <title>Utopia note·乌托邦手记</title>
     <style>
         :root {
             /* 霓射质感配色系统 */
@@ -440,49 +440,65 @@
             line-height: 1.5; 
         }
 
-        /* 详情页 Hero */
-        .hero-section {
-            position: relative;
-            border-radius: 32px;
-            overflow: hidden;
-            margin-bottom: 30px;
-            height: 400px;
+        /* 详情页：左图右文布局 */
+        .detail-layout {
+            display: flex;
+            gap: 24px;
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 24px;
         }
 
-        .hero-bg {
+        .detail-cover {
+            flex: 0 0 40%;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #111;
+        }
+
+        .detail-cover img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            display: block;
         }
 
-        .hero-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to top, var(--bg-deep) 0%, transparent 80%);
+        .detail-info {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: flex-end;
-            padding: 40px;
+            justify-content: space-between;
+            gap: 16px;
         }
 
-        .hero-title {
-            font-size: 48px;
+        .detail-title {
+            font-size: 32px;
             font-weight: 800;
-            margin-bottom: 12px;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            margin-bottom: 8px;
+        }
+
+        .detail-meta {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .detail-desc {
+            margin-top: 8px;
+            font-size: 14px;
+            line-height: 1.7;
         }
 
         .tag-row { 
             display: flex; 
             gap: 10px; 
-            margin-bottom: 20px; 
+            margin-top: 8px; 
         }
         
         .tag { 
-            padding: 6px 14px; 
-            background: rgba(255,255,255,0.1); 
-            border: 1px solid rgba(255,255,255,0.2); 
-            border-radius: 8px; 
+            padding: 4px 10px; 
+            background: rgba(255,255,255,0.08); 
+            border-radius: 999px; 
             font-size: 12px; 
         }
 
@@ -523,6 +539,120 @@
         .char-name { 
             font-size: 12px; 
             color: var(--text-muted); 
+        }
+
+        /* 个人设定页（Dock 第四项） */
+        .persona-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .persona-strip {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding: 12px 4px 4px;
+            margin-bottom: 20px;
+            scrollbar-width: none;
+        }
+
+        .persona-chip {
+            flex: 0 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+
+        .persona-chip.active {
+            opacity: 1;
+        }
+
+        .persona-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid transparent;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 26px;
+        }
+
+        .persona-chip.active .persona-avatar {
+            border-color: #fff;
+        }
+
+        .persona-name {
+            font-size: 12px;
+            max-width: 72px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .persona-form {
+            padding: 20px;
+            border-radius: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .persona-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .persona-label {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .persona-textarea {
+            width: 100%;
+            min-height: 100px;
+            resize: vertical;
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(0,0,0,0.25);
+            color: var(--text-main);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .persona-avatar-slot {
+            width: 120px;
+            height: 120px;
+            border-radius: 24px;
+            background: rgba(255,255,255,0.06);
+            border: 1px dashed rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .persona-avatar-slot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .persona-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 4px;
         }
 
         /* 系统设置 */
@@ -575,11 +705,101 @@
             color: white;
         }
 
+        /* 游戏界面 */
+        .game-container {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            display: none;
+            background-color: #000;
+            overflow: hidden;
+        }
+
+        .game-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.65);
+        }
+
+        .game-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            height: 100%;
+            padding: 20px 16px 28px;
+        }
+
+        .game-text-box {
+            max-width: 900px;
+            margin: 0 auto 16px;
+            background: rgba(0,0,0,0.68);
+            border-radius: 16px;
+            padding: 16px 18px;
+            color: #fff;
+            min-height: 90px;
+            font-size: 15px;
+            line-height: 1.7;
+            cursor: pointer;
+        }
+
+        .game-text-box span {
+            white-space: pre-wrap;
+        }
+
+        .game-options {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .game-option-btn {
+            padding: 10px 16px;
+            border-radius: 999px;
+            border: none;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .game-option-btn:hover {
+            background: rgba(255,255,255,0.08);
+        }
+
+        .game-option-btn:active {
+            transform: scale(0.97);
+        }
+
+        .game-exit-btn {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            z-index: 2;
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: none;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
         /* 响应式 */
         @media (max-width: 768px) {
-            .hero-section { height: 300px; }
-            .hero-title { font-size: 32px; }
-            .hero-overlay { padding: 20px; }
+            .detail-layout {
+                flex-direction: column;
+            }
+            .detail-cover {
+                flex-basis: auto;
+                height: 220px;
+            }
             .dock-nav { 
                 width: 90%; 
                 justify-content: space-between; 
@@ -587,6 +807,14 @@
             }
             .grid-layout {
                 grid-template-columns: 1fr;
+            }
+
+            .game-content {
+                padding: 16px 10px 24px;
+            }
+            .game-text-box {
+                font-size: 14px;
+                padding: 14px 14px;
             }
         }
 
@@ -680,16 +908,36 @@
                 返回
             </button>
 
-            <div class="hero-section">
-                <!-- 图床位置：<img src="YOUR_IMAGE_URL" class="hero-bg" alt="副本封面"> -->
-                <img src="https://images.unsplash.com/photo-1599707367072-cd6ad6cb3d2e?auto=format&fit=crop&w=1200&q=80" class="hero-bg">
-                <div class="hero-overlay">
-                    <div class="tag-row">
-                        <span class="tag">权谋</span>
-                        <span class="tag">恋爱</span>
-                        <span class="tag">多结局</span>
+            <!-- 左图右文头图区域 -->
+            <div class="detail-layout glass-panel">
+                <div class="detail-cover">
+                    <!-- 图床位置：<img src="YOUR_IMAGE_URL" alt="紫禁城迷梦封面"> -->
+                    <img src="https://images.unsplash.com/photo-1599707367072-cd6ad6cb3d2e?auto=format&fit=crop&w=1200&q=80" alt="紫禁城迷梦封面">
+                </div>
+                <div class="detail-info">
+                    <div>
+                        <div class="detail-title">紫禁城迷梦</div>
+                        <div class="detail-meta">
+                            作者：主神空间<br>
+                            标签：
+                            <div class="tag-row">
+                                <span class="tag">古代宫廷</span>
+                                <span class="tag">权谋</span>
+                                <span class="tag">恋爱</span>
+                            </div>
+                            <div class="detail-desc">
+                                穿越到明朝永乐年间，你成为了一名入宫的秀女。在这个金碧辉煌却暗流涌动的紫禁城中，每一步都可能是生死考验。
+                            </div>
+                        </div>
                     </div>
-                    <h1 class="hero-title">紫禁城迷梦</h1>
+                    <div>
+                        <button class="btn-glow" onclick="startGame()" style="margin-bottom: 10px;">
+                            开始命运之旅
+                        </button>
+                        <button class="btn-glow" onclick="startGame('endless')" style="background: rgba(255,255,255,0.1);">
+                            无尽模式
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -722,18 +970,6 @@
                     </div>
                 </div>
 
-                <div style="margin-top: 24px; color: var(--text-muted); line-height: 1.6; font-size: 14px;">
-                    穿越到明朝永乐年间，你成为了一名入宫的秀女。在这个金碧辉煌却暗流涌动的紫禁城中，每一步都可能是生死考验。
-                </div>
-
-                <div style="margin-top: 20px; display:flex; gap:12px;">
-                    <button class="btn-glow" onclick="alert('Demo: 进入剧情模式')">
-                        📖 开始命运之旅
-                    </button>
-                    <button class="btn-glow" onclick="alert('Demo: 无尽模式')" style="background: rgba(255,255,255,0.1);">
-                        ♾️ 无尽模式
-                    </button>
-                </div>
             </div>
 
             <!-- 剧情分享区 -->
@@ -777,10 +1013,42 @@
         <!-- 5. 我的设定视图 -->
         <div class="view-section" id="view-persona">
             <h2 class="section-header">我的设定</h2>
-            <div class="settings-container glass-panel setting-group">
-                <p style="color: var(--text-muted); line-height: 1.8;">
-                    定制你的人设Tag，影响NPC反应，功能开发中...
-                </p>
+            <div class="persona-container">
+                <!-- 顶部头像一排 -->
+                <div class="glass-panel" style="border-radius: 20px; padding: 12px 16px 4px;">
+                    <div class="persona-strip" id="persona-strip">
+                        <!-- 动态插入头像 chip -->
+                    </div>
+                </div>
+
+                <!-- 当前设定表单 -->
+                <div class="glass-panel persona-form" style="margin-top: 16px;">
+                    <div class="persona-row">
+                        <span class="persona-label">姓名</span>
+                        <input id="persona-name" class="input-modern" placeholder="如：沈如意 / 玩家代号">
+                    </div>
+                    <div class="persona-row">
+                        <span class="persona-label">设定</span>
+                        <textarea id="persona-desc" class="persona-textarea" placeholder="人物背景、性格、小秘密……"></textarea>
+                    </div>
+                    <div class="persona-row">
+                        <span class="persona-label">头像</span>
+                        <div style="display:flex; align-items:center; gap:16px;">
+                            <div class="persona-avatar-slot" id="persona-avatar-slot" onclick="triggerAvatarUpload()">
+                                <span id="persona-avatar-placeholder">点击上传头像</span>
+                                <img id="persona-avatar-preview" style="display:none;" alt="自定义头像预览">
+                            </div>
+                            <div style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+                                头像仅保存在本地浏览器，不会上传到服务器。<br>
+                                建议使用方形图片以获得更好效果。
+                            </div>
+                        </div>
+                        <input type="file" id="persona-avatar-input" accept="image/*" style="display:none;" onchange="onAvatarFileChange(event)">
+                    </div>
+                    <div class="persona-actions">
+                        <button class="btn-glow" style="flex:1;" onclick="savePersona()">保存此设定</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -816,11 +1084,24 @@
             <div class="settings-container glass-panel setting-group" style="margin-top: 24px;">
                 <h3 style="margin-bottom: 20px; font-size: 18px;">主题风格</h3>
                 <div class="theme-grid">
-                    <button class="theme-btn active" data-theme="purple" onclick="changeTheme('purple')">💜 紫色</button>
-                    <button class="theme-btn" data-theme="black" onclick="changeTheme('black')">🖤 黑色</button>
-                    <button class="theme-btn" data-theme="white" onclick="changeTheme('white')">🤍 白色</button>
-                    <button class="theme-btn" data-theme="green" onclick="changeTheme('green')">💚 绿色</button>
-                    <button class="theme-btn" data-theme="blue" onclick="changeTheme('blue')">💙 蓝色</button>
+                    <button class="theme-btn active" data-theme="purple" onclick="changeTheme('purple')">紫色</button>
+                    <button class="theme-btn" data-theme="black" onclick="changeTheme('black')">黑色</button>
+                    <button class="theme-btn" data-theme="white" onclick="changeTheme('white')">白色</button>
+                    <button class="theme-btn" data-theme="green" onclick="changeTheme('green')">绿色</button>
+                    <button class="theme-btn" data-theme="blue" onclick="changeTheme('blue')">蓝色</button>
+                </div>
+            </div>
+
+            <!-- 剧本管理 -->
+            <div class="settings-container glass-panel setting-group" style="margin-top: 24px;">
+                <h3 style="margin-bottom: 12px; font-size: 18px;">剧本管理</h3>
+                <p style="color: var(--text-muted); font-size: 12px; line-height: 1.7; margin-bottom: 8px;">
+                    这里会显示当前使用的 <code>storyData</code> JSON。你可以直接在下方编辑，然后点击「更新剧本」即时生效。
+                </p>
+                <textarea id="storyEditor" class="persona-textarea" style="min-height: 200px; font-family: SFMono-Regular, Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px;"></textarea>
+                <div class="persona-actions" style="margin-top: 10px;">
+                    <button class="btn-glow" style="flex:1;" onclick="updateStoryFromEditor()">更新剧本</button>
+                    <button class="btn-glow" style="flex:1; background: rgba(0,0,0,0.4);" onclick="resetStory()">重置</button>
                 </div>
             </div>
         </div>
@@ -845,12 +1126,119 @@
         </div>
     </div>
 
+    <!-- 游戏界面 -->
+    <div id="gameContainer" class="game-container">
+        <div id="gameBg" class="game-bg"></div>
+        <button class="game-exit-btn" onclick="exitGame()">退出</button>
+        <div class="game-content">
+            <div id="gameTextBox" class="game-text-box">
+                <span id="gameText"></span>
+            </div>
+            <div id="gameOptions" class="game-options"></div>
+        </div>
+    </div>
+
     <script>
+        const USERNAME_STORAGE = 'infinite.username';
+        const PERSONA_STORAGE = 'infinite.personas';
+        const STORY_STORAGE = 'infinite.customStory';
+
+        let currentPersonaId = null;
+
+        // 打字机状态
+        let typingTimer = null;
+        let typingIndex = 0;
+        let typingText = '';
+        let isTyping = false;
+
+        // 默认剧本数据（支持 fixed / ai 混合）
+        const storyData = {
+            start: {
+                type: 'fixed',
+                bg: 'https://images.unsplash.com/photo-1599707367072-cd6ad6cb3d2e?auto=format&fit=crop&w=1200&q=80',
+                text:
+`夜风从宫墙之上吹过，檐角的金铃被吹得轻轻作响。你随同新入宫的秀女队伍缓缓前行，脚下是被岁月磨得发亮的青石板，仿佛每一步都踩在前人留下的秘密上。\n\n远处乐声隐约，宫灯一盏盏点亮，金碧辉煌却让人心底发寒。你感觉到有目光在暗处注视——是那位传闻冷心冷面的皇子，还是站在阴影里的侍卫？今晚，将是你命运真正开始的时刻。`,
+                options: [
+                    { text: '顺从领路宫女，安静地走完入宫流程', nextScene: 'followMaid' },
+                    { text: '偷偷回头，看一眼站在暗处的侍卫', nextScene: 'lookGuard' }
+                ]
+            },
+            followMaid: {
+                type: 'fixed',
+                bg: 'https://images.unsplash.com/photo-1563298723-dcfebaa392e3?auto=format&fit=crop&w=1200&q=80',
+                text:
+`你压下心中所有的好奇，只是低头跟在领路宫女身后。她的步伐轻快却不失规矩，显然已经习惯了把新人送往不同宫院的流程。\n\n路过偏殿时，你听见门后传来压低的争吵声，字句里提到“选秀名单”和“有人动了手脚”。宫女猛地加快了脚步，仿佛害怕你听见更多。你隐约意识到，自己能否留在这座宫城里，早已不是单纯的运气问题。`,
+                options: [
+                    { text: '假装没听见，先稳住脚跟', nextScene: 'safeEnd' },
+                    { text: '记下这些话，暗中查清真相', nextScene: 'plotBeginAi' }
+                ]
+            },
+            lookGuard: {
+                type: 'fixed',
+                bg: 'https://images.unsplash.com/photo-1558985303-38eab1f8e51c?auto=format&fit=crop&w=1200&q=80',
+                text:
+`你不顾宫规，还是回头看了一眼。那名侍卫半隐在宫灯照不到的阴影里，盔甲没有完全扣好，似乎刚刚才从某处急匆匆赶来。\n\n四目相对的一瞬，他明显愣了一下，随即很快低头行礼，仿佛从未与人对视。可你清楚地看到，他默默对你做了一个极轻微的手势——像是在提醒你，今晚不要独自离开人群。`,
+                options: [
+                    { text: '记住这位侍卫，悄悄跟在队伍中间', nextScene: 'plotBeginAi' },
+                    { text: '无视警告，趁人不注意时绕近宫墙', nextScene: 'dangerEnd' }
+                ]
+            },
+            // 使用 AI 续写的场景示例
+            plotBeginAi: {
+                type: 'ai',
+                bg: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80',
+                prompt: '继续这个紫禁城开局故事：主角在夜色中意识到自己被卷入权谋斗争之中，语气偏抒情、第一人称，控制在 250 字以内。',
+                options: [
+                    { text: '本章结束，回到主神空间', nextScene: null }
+                ]
+            },
+            safeEnd: {
+                type: 'fixed',
+                bg: 'https://images.unsplash.com/photo-1578301978018-3005759f48f9?auto=format&fit=crop&w=1200&q=80',
+                text:
+`你选择把所有不安先压在心底，只求在这陌生的宫城安稳活下去。或许这是最安全的做法，但也是最容易被时代遗忘的路径。\n\n当寝宫的门在你身后关上，你忽然有种被世界隔绝的错觉。也许，真正决定命运的机会，已经悄悄从你指缝间溜走。`,
+                options: [
+                    { text: '结束体验，返回主神空间', nextScene: null }
+                ]
+            },
+            dangerEnd: {
+                type: 'fixed',
+                bg: 'https://images.unsplash.com/photo-1526498460520-4c246339dccb?auto=format&fit=crop&w=1200&q=80',
+                text:
+`你趁宫女回头点人数的空档，悄悄往宫墙阴影里退去。夜风比想象中更冷，墙角积雪未融，踩上去发出细碎的声响。\n\n还没等你看清前路，一只冰冷的手已经扣在你肩上——那是巡夜的禁军。他没有多问，只是低声提醒你：“今晚第一次犯规，只算你迷路。”你被重新带回队伍，却知道自己已经被这座宫城真正记住了。`,
+                options: [
+                    { text: '结束体验，返回主神空间', nextScene: null }
+                ]
+            }
+        };
+
+        // 当前生效剧本（可被自定义 JSON 覆盖）
+        let activeStoryData = storyData;
+
         // 初始化
         function init() {
             loadApiConfig();
             loadTheme();
-            document.body.style.opacity = 1;
+            loadCustomStory();
+
+            // 用户名自动回填 + 自动进入主界面
+            const nameInput = document.getElementById('username');
+            const savedName = localStorage.getItem(USERNAME_STORAGE);
+            if (savedName) {
+                nameInput.value = savedName;
+                document.getElementById('displayName').textContent = savedName;
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('mainHub').style.display = 'block';
+                switchView('hub');
+            }
+
+            nameInput.addEventListener('blur', () => {
+                const v = nameInput.value.trim();
+                if (v) localStorage.setItem(USERNAME_STORAGE, v);
+            });
+
+            initPersonas();
+            initStoryEditor();
         }
 
         // 切换视图逻辑
@@ -895,6 +1283,7 @@
             }
             
             document.getElementById('displayName').textContent = username;
+            localStorage.setItem(USERNAME_STORAGE, username);
             
             // 切换界面
             document.getElementById('loginPage').style.display = 'none';
@@ -907,6 +1296,141 @@
         // 显示副本详情
         function showInstanceDetail() {
             switchView('detail');
+        }
+
+        // ===== 游戏流程 =====
+        function startGame(mode) {
+            const mainHub = document.getElementById('mainHub');
+            const game = document.getElementById('gameContainer');
+            const dock = document.querySelector('.dock-nav');
+
+            if (mainHub) mainHub.style.display = 'none';
+            if (dock) dock.style.display = 'none';
+            if (game) game.style.display = 'block';
+
+            const firstScene = mode === 'endless' ? 'plotBeginAi' : 'start';
+            loadScene(firstScene);
+        }
+
+        function exitGame() {
+            const mainHub = document.getElementById('mainHub');
+            const game = document.getElementById('gameContainer');
+            const dock = document.querySelector('.dock-nav');
+
+            if (game) game.style.display = 'none';
+            if (mainHub) mainHub.style.display = 'block';
+            if (dock) dock.style.display = 'flex';
+
+            // 返回副本详情
+            switchView('detail');
+        }
+
+        async function loadScene(sceneId) {
+            const scene = activeStoryData[sceneId];
+            const bgEl = document.getElementById('gameBg');
+            const optionsEl = document.getElementById('gameOptions');
+
+            if (!scene) {
+                exitGame();
+                return;
+            }
+
+            if (bgEl) {
+                bgEl.style.backgroundImage = scene.bg ? `url(${scene.bg})` : 'none';
+            }
+
+            if (optionsEl) {
+                optionsEl.innerHTML = '';
+                if (scene.options && scene.options.length) {
+                    scene.options.forEach(opt => {
+                        const btn = document.createElement('button');
+                        btn.className = 'game-option-btn';
+                        btn.textContent = opt.text;
+                        btn.onclick = () => {
+                            if (opt.nextScene) {
+                                loadScene(opt.nextScene);
+                            } else {
+                                exitGame();
+                            }
+                        };
+                        optionsEl.appendChild(btn);
+                    });
+                }
+            }
+
+            // fixed 文本：直接打字机
+            if (!scene.type || scene.type === 'fixed') {
+                typeWriter(scene.text || '');
+                return;
+            }
+
+            // ai 文本：先显示 loading，再请求 OpenAI
+            if (scene.type === 'ai') {
+                const textEl = document.getElementById('gameText');
+                if (textEl) {
+                    textEl.textContent = '...';
+                }
+
+                const generated = await generateAiSceneText(sceneId, scene);
+                const finalText = generated && generated.text ? generated.text : (typeof generated === 'string' ? generated : '');
+
+                // 如果 AI 返回了新的选项，替换当前 options
+                if (generated && Array.isArray(generated.options) && generated.options.length) {
+                    activeStoryData[sceneId].options = generated.options;
+                    if (optionsEl) {
+                        optionsEl.innerHTML = '';
+                        generated.options.forEach(opt => {
+                            const btn = document.createElement('button');
+                            btn.className = 'game-option-btn';
+                            btn.textContent = opt.text;
+                            btn.onclick = () => {
+                                if (opt.nextScene) {
+                                    loadScene(opt.nextScene);
+                                } else {
+                                    exitGame();
+                                }
+                            };
+                            optionsEl.appendChild(btn);
+                        });
+                    }
+                }
+
+                typeWriter(finalText || (scene.text || '（AI 暂时没有返回内容）'));
+            }
+        }
+
+        function typeWriter(text) {
+            const textEl = document.getElementById('gameText');
+            if (!textEl) return;
+
+            if (typingTimer) clearTimeout(typingTimer);
+            typingText = text;
+            typingIndex = 0;
+            isTyping = true;
+            textEl.textContent = '';
+
+            const step = () => {
+                if (!isTyping) return;
+                if (typingIndex >= typingText.length) {
+                    textEl.textContent = typingText;
+                    isTyping = false;
+                    return;
+                }
+                textEl.textContent += typingText.charAt(typingIndex);
+                typingIndex += 1;
+                typingTimer = setTimeout(step, 30);
+            };
+
+            step();
+        }
+
+        function skipTyping() {
+            if (!isTyping) return;
+            const textEl = document.getElementById('gameText');
+            if (!textEl) return;
+            if (typingTimer) clearTimeout(typingTimer);
+            isTyping = false;
+            textEl.textContent = typingText;
         }
 
         // API 配置保存（v20 版本的三个字段）
@@ -972,6 +1496,280 @@
         function loadTheme() {
             const savedTheme = localStorage.getItem('theme') || 'purple';
             changeTheme(savedTheme);
+        }
+
+        // ===== 个人设定：本地多档位 + 头像上传 =====
+        function loadPersonas() {
+            try {
+                const raw = localStorage.getItem(PERSONA_STORAGE);
+                if (!raw) return [];
+                const list = JSON.parse(raw);
+                return Array.isArray(list) ? list : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function savePersonas(list) {
+            localStorage.setItem(PERSONA_STORAGE, JSON.stringify(list));
+        }
+
+        function initPersonas() {
+            renderPersonaStrip();
+            
+            // 游戏文本区域点击：正在打字时跳过动画
+            const box = document.getElementById('gameTextBox');
+            if (box) {
+                box.addEventListener('click', () => {
+                    if (isTyping) {
+                        skipTyping();
+                    }
+                });
+            }
+        }
+
+        // ===== 剧本管理：从 localStorage 读取 / 写入 =====
+        function loadCustomStory() {
+            const raw = localStorage.getItem(STORY_STORAGE);
+            if (!raw) return;
+            try {
+                const parsed = JSON.parse(raw);
+                if (parsed && typeof parsed === 'object') {
+                    activeStoryData = parsed;
+                }
+            } catch (e) {
+                console.warn('自定义剧本解析失败，已忽略：', e);
+            }
+        }
+
+        function initStoryEditor() {
+            const editor = document.getElementById('storyEditor');
+            if (!editor) return;
+            editor.value = JSON.stringify(activeStoryData, null, 2);
+        }
+
+        function updateStoryFromEditor() {
+            const editor = document.getElementById('storyEditor');
+            if (!editor) return;
+            const value = editor.value.trim();
+            if (!value) {
+                alert('剧本内容不能为空');
+                return;
+            }
+            try {
+                const parsed = JSON.parse(value);
+                if (!parsed || typeof parsed !== 'object') {
+                    alert('JSON 顶层必须是一个对象');
+                    return;
+                }
+                activeStoryData = parsed;
+                localStorage.setItem(STORY_STORAGE, JSON.stringify(parsed));
+                alert('剧本已更新并立即生效');
+            } catch (e) {
+                alert('JSON 解析失败，请检查格式：' + e.message);
+            }
+        }
+
+        function resetStory() {
+            activeStoryData = storyData;
+            localStorage.removeItem(STORY_STORAGE);
+            initStoryEditor();
+            alert('已恢复默认剧本');
+        }
+
+        // ===== AI 场景生成 =====
+        async function generateAiSceneText(sceneId, scene) {
+            const configRaw = localStorage.getItem('apiConfig');
+            if (!configRaw) {
+                return '（未配置 API，无法生成 AI 剧情，请先在系统设置中填写 API 信息）';
+            }
+            let config;
+            try {
+                config = JSON.parse(configRaw);
+            } catch {
+                return '（API 配置解析失败，请在系统设置中重新保存一次）';
+            }
+
+            if (!config.key) {
+                return '（API Key 为空，请在系统设置中填写后再试）';
+            }
+
+            const apiUrl = (config.url || 'https://api.openai.com/v1/chat/completions').replace(/\/$/, '') + '/chat/completions';
+
+            const baseSystemPrompt = '你是一个无限流恋爱文字游戏的文案引擎。根据提示生成中文剧情片段和后续选项，输出 JSON 格式：{"text": "...", "options":[{"text":"选项文案","nextScene":"下一个场景 id 或 null"}]}，不要输出多余文字。';
+
+            const userPrompt = scene.prompt || `为场景 ${sceneId} 续写一段 200-300 字的剧情，并给出 2 个后续行为选项。`;
+
+            try {
+                const res = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + config.key
+                    },
+                    body: JSON.stringify({
+                        model: config.model || 'gpt-4.1-mini',
+                        messages: [
+                            { role: 'system', content: baseSystemPrompt },
+                            { role: 'user', content: userPrompt }
+                        ],
+                        temperature: 0.9
+                    })
+                });
+
+                if (!res.ok) {
+                    console.error('OpenAI API error', await res.text());
+                    return '（调用 AI 接口失败，请检查 API 地址和 Key 是否正确）';
+                }
+
+                const data = await res.json();
+                const content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+                if (!content) return '（AI 没有返回任何内容）';
+
+                // 期望是 JSON，如果解析失败就把原文当作纯文本
+                try {
+                    const parsed = JSON.parse(content);
+                    return parsed;
+                } catch {
+                    return content;
+                }
+            } catch (e) {
+                console.error('fetch error', e);
+                return '（网络错误或浏览器阻止了请求，无法连接到 AI 接口）';
+            }
+        }
+
+        function renderPersonaStrip() {
+            const strip = document.getElementById('persona-strip');
+            if (!strip) return;
+
+            const list = loadPersonas();
+            strip.innerHTML = '';
+
+            // “新建”按钮
+            const addChip = document.createElement('div');
+            addChip.className = 'persona-chip';
+            addChip.innerHTML = `
+                <div class="persona-avatar">+</div>
+                <div class="persona-name">新建</div>
+            `;
+            addChip.onclick = () => selectPersona(null);
+            strip.appendChild(addChip);
+
+            list.forEach(p => {
+                const chip = document.createElement('div');
+                chip.className = 'persona-chip' + (p.id === currentPersonaId ? ' active' : '');
+
+                const avatar = document.createElement('div');
+                avatar.className = 'persona-avatar';
+                if (p.avatarData) {
+                    const img = document.createElement('img');
+                    img.src = p.avatarData;
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.objectFit = 'cover';
+                    avatar.innerHTML = '';
+                    avatar.appendChild(img);
+                } else {
+                    avatar.textContent = (p.name || '你').slice(0, 1);
+                }
+
+                const name = document.createElement('div');
+                name.className = 'persona-name';
+                name.textContent = p.name || '未命名';
+
+                chip.appendChild(avatar);
+                chip.appendChild(name);
+                chip.onclick = () => selectPersona(p.id);
+
+                strip.appendChild(chip);
+            });
+        }
+
+        function selectPersona(id) {
+            currentPersonaId = id;
+            const list = loadPersonas();
+            const found = list.find(p => p.id === id);
+
+            const nameInput = document.getElementById('persona-name');
+            const descInput = document.getElementById('persona-desc');
+            const slot = document.getElementById('persona-avatar-slot');
+            const preview = document.getElementById('persona-avatar-preview');
+            const placeholder = document.getElementById('persona-avatar-placeholder');
+
+            if (!found) {
+                nameInput.value = '';
+                descInput.value = '';
+                preview.style.display = 'none';
+                placeholder.style.display = 'block';
+            } else {
+                nameInput.value = found.name || '';
+                descInput.value = found.desc || '';
+                if (found.avatarData) {
+                    preview.src = found.avatarData;
+                    preview.style.display = 'block';
+                    placeholder.style.display = 'none';
+                } else {
+                    preview.style.display = 'none';
+                    placeholder.style.display = 'block';
+                }
+            }
+
+            renderPersonaStrip();
+        }
+
+        function triggerAvatarUpload() {
+            const input = document.getElementById('persona-avatar-input');
+            if (input) input.click();
+        }
+
+        function onAvatarFileChange(e) {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                const dataUrl = reader.result;
+                const preview = document.getElementById('persona-avatar-preview');
+                const placeholder = document.getElementById('persona-avatar-placeholder');
+                preview.src = dataUrl;
+                preview.style.display = 'block';
+                placeholder.style.display = 'none';
+
+                // 先把数据挂到当前 persona 对象上，保存时写入 localStorage
+                preview.dataset.avatarData = dataUrl;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function savePersona() {
+            const name = document.getElementById('persona-name').value.trim();
+            const desc = document.getElementById('persona-desc').value.trim();
+            const preview = document.getElementById('persona-avatar-preview');
+            const avatarData = preview.dataset.avatarData || preview.src || '';
+
+            if (!name) {
+                alert('请先填写姓名');
+                return;
+            }
+
+            const list = loadPersonas();
+            const now = Date.now();
+
+            if (currentPersonaId) {
+                const idx = list.findIndex(p => p.id === currentPersonaId);
+                if (idx >= 0) {
+                    list[idx] = { ...list[idx], name, desc, avatarData, updatedAt: now };
+                }
+            } else {
+                const id = 'persona_' + now;
+                currentPersonaId = id;
+                list.push({ id, name, desc, avatarData, createdAt: now, updatedAt: now });
+            }
+
+            savePersonas(list);
+            renderPersonaStrip();
+            alert('设定已保存');
         }
 
         // 启动
