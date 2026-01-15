@@ -1095,32 +1095,6 @@
                <div id="apiTestResult" style="margin-top: 12px; padding: 12px; border-radius: 8px; font-size: 13px; display: none;"></div>
             </div>
 
-            <!-- 主题设置 -->
-            <div class="settings-container glass-panel setting-group" style="margin-top: 24px;">
-                <h3 style="margin-bottom: 20px; font-size: 18px;">主题风格</h3>
-                <div class="theme-grid">
-                    <button class="theme-btn active" data-theme="purple" onclick="changeTheme('purple')">紫色</button>
-                    <button class="theme-btn" data-theme="black" onclick="changeTheme('black')">黑色</button>
-                    <button class="theme-btn" data-theme="white" onclick="changeTheme('white')">白色</button>
-                    <button class="theme-btn" data-theme="green" onclick="changeTheme('green')">绿色</button>
-                    <button class="theme-btn" data-theme="blue" onclick="changeTheme('blue')">蓝色</button>
-                </div>
-            </div>
-
-            <!-- 剧本管理 -->
-            <div class="settings-container glass-panel setting-group" style="margin-top: 24px;">
-                <h3 style="margin-bottom: 12px; font-size: 18px;">剧本管理</h3>
-                <p style="color: var(--text-muted); font-size: 12px; line-height: 1.7; margin-bottom: 8px;">
-                    这里会显示当前使用的 <code>storyData</code> JSON。你可以直接在下方编辑，然后点击「更新剧本」即时生效。
-                </p>
-                <textarea id="storyEditor" class="persona-textarea" style="min-height: 200px; font-family: SFMono-Regular, Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px;"></textarea>
-                <div class="persona-actions" style="margin-top: 10px;">
-                    <button class="btn-glow" style="flex:1;" onclick="updateStoryFromEditor()">更新剧本</button>
-                    <button class="btn-glow" style="flex:1; background: rgba(0,0,0,0.4);" onclick="resetStory()">重置</button>
-                </div>
-            </div>
-        </div>
-
         <!-- 底部 Dock 导航 -->
         <div class="dock-nav glass-panel">
             <div class="dock-item active" onclick="switchView('hub')" title="副本中心">
