@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主神空间 - 无限流恋爱游戏</title>
+    <style>
+        :root {
+            --primary: #a855f7;
+            --primary-dark: #7c3aed;
+            --bg-main: #0a0015;
+            --bg-card: rgba(20, 10, 35, 0.85);
+            --bg-dark: rgba(15, 5, 25, 0.7);
+            --text-main: #e0d4f7;
+            --text-secondary: #b8a5d6;
+            --text-accent: #d8b4fe;
+            --border: #7c3aed;
+            --glow: rgba(168, 85, 247, 0.6);
+        }
+
+        [data-theme="black"] {
+            --primary: #888;
+            --primary-dark: #666;
+            --bg-main: #000;
+            --bg-card: rgba(25, 25, 25, 0.85);
+            --bg-dark: rgba(15, 15, 15, 0.7);
+            --text-main: #e5e7eb;
+            --text-secondary: #b0b0b0;
+            --text-accent: #9ca3af;
+            --border: #555;
+            --glow: rgba(136, 136, 136, 0.4);
+        }
+
+        [data-theme="white"] {
+            --primary: #5b7aef;
+            --primary-dark: #4461d9;
+            --bg-main: #f5f7fa;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --bg-dark: rgba(240, 242, 245, 0.8);
+            --text-main: #2d3748;
+            --text-secondary: #4a5568;
+            --text-accent: #718096;
+            --border: #cbd5e1;
+            --glow: rgba(91, 122, 239, 0.3);
+        }
+
+        [data-theme="green"] {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --bg-main: #020a06;
+            --bg-card: rgba(10, 40, 25, 0.85);
+            --bg-dark: rgba(5, 25, 15, 0.7);
+            --text-main: #d1fae5;
+            --text-secondary: #a0d9c0;
+            --text-accent: #6ee7b7;
+            --border: #059669;
+            --glow: rgba(16, 185, 129, 0.5);
+        }
+
+        [data-theme="blue"] {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --bg-main: #020510;
+            --bg-card: rgba(15, 25, 50, 0.85);
+            --bg-dark: rgba(8, 15, 30, 0.7);
+            --text-main: #dbeafe;
+            --text-secondary: #a0c4f0;
+            --text-accent: #93c5fd;
+            --border: #2563eb;
+            --glow: rgba(59, 130, 246, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'SF Pro Display', -apple-system, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 50%, var(--glow) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, var(--glow) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, var(--glow) 0%, transparent 50%);
+            opacity: 0.15;
+            animation: drift 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes drift {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(5%, 10%) rotate(5deg); }
+            66% { transform: translate(-5%, 5%) rotate(-5deg); }
+        }
+
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            opacity: 0.2;
+        }
+
+        .matrix-rain {
+            position: absolute;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: var(--primary);
+            opacity: 0.5;
+            animation: fall linear infinite;
+            text-shadow: 0 0 8px var(--glow);
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100%); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        /* 登录页 */
+        .login-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-container {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            border-radius: 24px;
+            padding: 60px 45px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(168, 85, 247, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            opacity: 0.5;
+        }
+
+        .login-title {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 12px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--text-main) 50%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% center; }
+            50% { background-position: 100% center; }
+        }
+
+        .login-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 45px;
+            font-size: 15px;
+            letter-spacing: 3px;
+            opacity: 0.8;
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-accent);
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .input-with-btn {
+            display: flex;
+            gap: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px 18px;
+            background: var(--bg-dark);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            border-radius: 12px;
+            color: var(--text-main);
+            font-size: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: inherit;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(20, 10, 35, 0.95);
+            box-shadow: 0 0 0 3px var(--glow), 0 4px 12px rgba(0,0,0,0.2);
+            transform: translateY(-1px);
+        }
+
+        input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+
+        .save-btn {
+            padding: 16px 24px;
+            background: var(--bg-dark);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-main);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        .save-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--glow);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 12px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 16px var(--glow);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px var(--glow);
+        }
+
+        /* 主界面 */
+        .main-hub {
+            display: none;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 顶部状态栏 */
+        .top-status {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .status-corner {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            border-radius: 16px;
+            padding: 12px 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            pointer-events: auto;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-icon {
+            font-size: 20px;
+        }
+
+        .status-value {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 18px;
+            text-shadow: 0 2px 8px var(--glow);
+        }
+
+        .user-title {
+            color: #fbbf24;
+            font-weight: 700;
+            text-shadow: 0 2px 8px rgba(251, 191, 36, 0.5);
+        }
+
+        /* 主导航 - 下拉选择器风格 */
+        .main-nav {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            border-radius: 16px;
+            padding: 8px 12px;
+            margin-bottom: 28px;
+            margin-top: 80px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .nav-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .nav-select {
+            flex: 1;
+            padding: 12px 16px;
+            background: var(--bg-dark);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: inherit;
+            outline: none;
+        }
+
+        .nav-select:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--glow);
+        }
+
+        .nav-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--glow);
+        }
+
+        .nav-select option {
+            background: var(--bg-card);
+            color: var(--text-main);
+            padding: 12px;
+        }
+
+        /* 视图容器 */
+        .view-container {
+            display: none;
+        }
+
+        .view-container.active {
+            display: block;
+        }
+
+        /* 副本中心 */
+        .instance-section {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .section-title {
+            font-size: 26px;
+            color: var(--primary);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            text-shadow: 0 2px 12px var(--glow);
+        }
+
+        .instance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .instance-card {
+            height: 380px;
+            background: var(--bg-dark);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        }
+
+        .instance-card.locked {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .instance-card:not(.locked):hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(168, 85, 247, 0.4);
+            border-color: var(--primary);
+        }
+
+        .instance-card-image {
+            width: 100%;
+            height: 240px;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .instance-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .instance-card-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.7) 100%);
+        }
+
+        .instance-card:not(.locked):hover .instance-card-image::after {
+            backdrop-filter: blur(2px);
+        }
+
+        .instance-card-content {
+            padding: 20px;
+        }
+
+        .instance-tag {
+            display: inline-block;
+            background: rgba(168, 85, 247, 0.25);
+            backdrop-filter: blur(10px);
+            color: var(--text-main);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            margin-bottom: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+
+        .instance-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .instance-desc {
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .instance-progress {
+            font-size: 12px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .locked-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .lock-icon {
+            font-size: 48px;
+            opacity: 0.8;
+        }
+
+        .lock-text {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* 功能卡片 */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            border-radius: 18px;
+            padding: 28px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 36px rgba(168, 85, 247, 0.35);
+        }
+
+        .feature-icon {
+            font-size: 42px;
+            margin-bottom: 16px;
+            filter: drop-shadow(0 4px 8px var(--glow));
+        }
+
+        .feature-title {
+            font-size: 20px;
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .feature-desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        /* 副本详情页 */
+        .detail-container {
+            display: flex;
+            gap: 36px;
+            margin-bottom: 36px;
+        }
+
+        .detail-poster {
+            flex-shrink: 0;
+            width: 420px;
+            height: 580px;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 140px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .detail-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 20px;
+        }
+
+        .detail-info {
+            flex: 1;
+        }
+
+        .detail-title {
+            font-size: 42px;
+            color: var(--primary);
+            margin-bottom: 18px;
+            font-weight: 800;
+            text-shadow: 0 4px 16px var(--glow);
+        }
+
+        .detail-meta {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .detail-synopsis {
+            background: var(--bg-dark);
+            backdrop-filter: blur(15px);
+            padding: 24px;
+            border-radius: 16px;
+            line-height: 1.9;
+            margin-bottom: 28px;
+            color: var(--text-secondary);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+        }
+
+        .detail-synopsis h3 {
+            color: var(--primary);
+            margin-bottom: 14px;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .characters-row {
+            margin-bottom: 28px;
+        }
+
+        .characters-row h3 {
+            color: var(--primary);
+            margin-bottom: 18px;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .characters-list {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .character-mini {
+            text-align: center;
+            min-width: 110px;
+            transition: transform 0.3s;
+        }
+
+        .character-mini:hover {
+            transform: translateY(-4px);
+        }
+
+        .character-mini-avatar {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 38px;
+            margin: 0 auto 10px;
+            box-shadow: 0 6px 20px var(--glow);
+            overflow: hidden;
+        }
+
+        .character-mini-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .character-mini-name {
+            font-size: 14px;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn-action {
+            padding: 16px 48px;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 20px var(--glow);
+        }
+
+        .btn-action:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px var(--glow);
+        }
+
+        .btn-action.secondary {
+            background: var(--bg-card);
+            backdrop-filter: blur(15px);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-action.secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* 剧情分享区 */
+        .story-share {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .story-share h3 {
+            color: var(--primary);
+            margin-bottom: 24px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .share-item {
+            background: var(--bg-dark);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 14px;
+            margin-bottom: 16px;
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s;
+        }
+
+        .share-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 16px rgba(168, 85, 247, 0.3);
+        }
+
+        .share-user {
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .share-text {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 14px;
+        }
+
+        /* 系统设置 */
+        .settings-panel {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            border-radius: 20px;
+            padding: 42px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .settings-title {
+            font-size: 36px;
+            color: var(--primary);
+            margin-bottom: 36px;
+            font-weight: 800;
+            text-shadow: 0 4px 16px var(--glow);
+        }
+
+        .setting-item {
+            margin-bottom: 36px;
+        }
+
+        .setting-label {
+            font-size: 17px;
+            color: var(--text-main);
+            margin-bottom: 16px;
+            display: block;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .theme-buttons {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .theme-btn {
+            padding: 14px 28px;
+            border: 2px solid rgba(124, 58, 237, 0.3);
+            border-radius: 12px;
+            background: var(--bg-dark);
+            backdrop-filter: blur(10px);
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .theme-btn:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+            box-shadow: 0 6px 20px var(--glow);
+        }
+
+        .theme-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 16px var(--glow);
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .top-status {
+                position: relative;
+                top: 0;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+
+            .main-nav {
+                margin-top: 0;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .nav-label {
+                text-align: center;
+            }
+
+            .nav-select {
+                width: 100%;
+            }
+
+            .detail-container {
+                flex-direction: column;
+            }
+
+            .detail-poster {
+                width: 100%;
+                height: 450px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body data-theme="purple">
+    <div class="bg-animation" id="bgAnimation"></div>
+
+    <!-- 登录页面 -->
+    <div class="login-page" id="loginPage">
+        <div class="login-container">
+            <h1 class="login-title">主神空间</h1>
+            <p class="login-subtitle">∞ 无限流恋爱冒险 ∞</p>
+            
+            <div class="input-group">
+                <label class="input-label">用户名/ID</label>
+                <input type="text" id="username" placeholder="输入你的代号..." />
+            </div>
+            
+            <button class="btn-primary" onclick="enterHub()">🚪 连接主神空间</button>
+        </div>
+    </div>
+
+    <!-- 主界面 -->
+    <div class="main-hub" id="mainHub">
+        <!-- 顶部状态栏 -->
+        <div class="top-status">
+            <div class="status-corner">
+                <div class="status-item">
+                    <span class="status-icon">⚡</span>
+                    <span class="status-value">80</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-icon">💎</span>
+                    <span class="status-value">1250</span>
+                </div>
+            </div>
+            <div class="status-corner">
+                <div class="status-item">
+                    <span class="status-icon">👤</span>
+                    <span class="status-value user-title" id="displayName">旅行者</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主导航 - 下拉选择器 -->
+        <div class="main-nav">
+            <span class="nav-label">当前页面:</span>
+            <select class="nav-select" id="mainNavSelect" onchange="switchMainView(this.value)">
+                <option value="hub">🏠 副本中心</option>
+                <option value="archive">👥 异界通讯录</option>
+                <option value="sanctuary">🏠 避难所</option>
+                <option value="gallery">📸 记忆回廊</option>
+                <option value="shop">🛒 道具商店</option>
+                <option value="achievements">🏆 成就系统</option>
+                <option value="persona">✨ 我的设定</option>
+                <option value="settings">⚙️ 系统设置</option>
+            </select>
+        </div>
+
+        <!-- 副本中心视图 -->
+        <div class="view-container active" id="hubView">
+            <div class="instance-section">
+                <h2 class="section-title">📚 副本世界</h2>
+                <div class="instance-grid">
+                    <!-- 可玩副本 -->
+                    <div class="instance-card" onclick="showInstanceDetail()">
+                        <div class="instance-card-image">
+                            <!-- 图床位置：<img src="YOUR_IMAGE_URL" alt="紫禁城"> -->
+                            🏯
+                        </div>
+                        <div class="instance-card-content">
+                            <span class="instance-tag">古代</span>
+                            <div class="instance-name">紫禁城迷梦</div>
+                            <div class="instance-desc">皇宫深处，权谋与爱情交织</div>
+                            <div class="instance-progress">进度: 未开始</div>
+                        </div>
+                    </div>
+
+                    <!-- 锁定副本 -->
+                    <div class="instance-card locked">
+                        <div class="instance-card-image">
+                            🔒
+                        </div>
+                        <div class="instance-card-content">
+                            <span class="instance-tag">待解锁</span>
+                            <div class="instance-name">???</div>
+                            <div class="instance-desc">完成当前副本解锁更多世界</div>
+                            <div class="instance-progress">需要 500 积分</div>
+                        </div>
+                        <div class="locked-overlay">
+                            <div class="lock-icon">🔐</div>
+                            <div class="lock-text">完成主线副本解锁</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 副本详情视图 -->
+        <div class="view-container" id="detailView">
+            <div class="detail-container">
+                <div class="detail-poster">
+                    <!-- 图床位置：<img src="YOUR_IMAGE_URL" alt="副本封面"> -->
+                    🏯
+                </div>
+                
+                <div class="detail-info">
+                    <h1 class="detail-title">紫禁城迷梦</h1>
+                    <div class="detail-meta">
+                        <span class="instance-tag">古代</span>
+                        <span class="instance-tag">宫廷</span>
+                        <span class="instance-tag">权谋</span>
+                    </div>
+                    
+                    <div class="detail-synopsis">
+                        <h3>副本梗概</h3>
+                        <p>穿越到明朝永乐年间，你成为了一名入宫的秀女。在这个金碧辉煌却暗流涌动的紫禁城中，每一步都可能是生死考验。冷酷的皇子、温柔的侍卫、神秘的太监总管，每个人都隐藏着不为人知的秘密。在权力与爱情的漩涡中，你能否找到属于自己的归宿？</p>
+                    </div>
+                    
+                    <div class="characters-row">
+                        <h3>主要人物</h3>
+                        <div class="characters-list">
+                            <div class="character-mini">
+                                <div class="character-mini-avatar">
+                                    <!-- 图床位置：<img src="YOUR_IMAGE_URL" alt="角色"> -->
+                                    👑
+                                </div>
+                                <div class="character-mini-name">夜幽皇子</div>
+                            </div>
+                            <div class="character-mini">
+                                <div class="character-mini-avatar">🗡️</div>
+                                <div class="character-mini-name">侍卫·云墨</div>
+                            </div>
+                            <div class="character-mini">
+                                <div class="character-mini-avatar">📿</div>
+                                <div class="character-mini-name">总管·无尘</div>
+                            </div>
+                            <div class="character-mini">
+                                <div class="character-mini-avatar">🎭</div>
+                                <div class="character-mini-name">神秘术士</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn-action" onclick="alert('进入剧情模式...')">📖 进入故事</button>
+                        <button class="btn-action secondary" onclick="alert('无尽模式解锁中...')">♾️ 无尽模式</button>
+                        <button class="btn-action secondary" onclick="backToHub()">← 返回</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="story-share">
+                <h3>✨ 优秀剧情分享</h3>
+                <div class="share-item">
+                    <div class="share-user">🌸 樱花落</div>
+                    <div class="share-text">"我在紫禁城遇到的侍卫云墨简直太温柔了！在我被人陷害时，他冒着生命危险为我作证。最后我们一起逃出皇宫，隐居山林的结局太美好了！"</div>
+                </div>
+                <div class="share-item">
+                    <div class="share-user">⚔️ 剑客行</div>
+                    <div class="share-text">"选择了皇子线，虽然他表面冷酷，但在深宫暗斗中始终保护我。最终他登基为帝，我成为皇后，但我们约定不忘初心的场景太催泪了..."</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 异界通讯录视图 -->
+        <div class="view-container" id="archiveView">
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">👑</div>
+                    <div class="feature-title">夜幽皇子</div>
+                    <div class="feature-desc">紫禁城迷梦 · 核心角色<br>好感度: 65%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 避难所视图 -->
+        <div class="view-container" id="sanctuaryView">
+            <div class="settings-panel">
+                <h2 class="settings-title">🏠 避难所</h2>
+                <p style="color: var(--text-secondary); line-height: 1.8;">
+                    这里是你的专属空间，可以将副本中爱上的角色带回这里。<br>
+                    功能开发中...
+                </p>
+            </div>
+        </div>
+
+        <!-- 记忆回廊视图 -->
+        <div class="view-container" id="galleryView">
+            <div class="settings-panel">
+                <h2 class="settings-title">📸 记忆回廊</h2>
+                <p style="color: var(--text-secondary); line-height: 1.8;">
+                    CG相册、剧情回放、结局树功能开发中...
+                </p>
+            </div>
+        </div>
+
+        <!-- 道具商店视图 -->
+        <div class="view-container" id="shopView">
+            <div class="settings-panel">
+                <h2 class="settings-title">🛒 道具商店</h2>
+                <p style="color: var(--text-secondary); line-height: 1.8;">
+                    魅力口红、测谎仪、限定门票等道具即将上线...
+                </p>
+            </div>
+        </div>
+
+        <!-- 成就系统视图 -->
+        <div class="view-container" id="achievementsView">
+            <div class="settings-panel">
+                <h2 class="settings-title">🏆 成就系统</h2>
+                <p style="color: var(--text-secondary); line-height: 1.8;">
+                    记录你的攻略里程碑，功能开发中...
+                </p>
+            </div>
+        </div>
+
+        <!-- 我的设定视图 -->
+        <div class="view-container" id="personaView">
+            <div class="settings-panel">
+                <h2 class="settings-title">✨ 我的设定</h2>
+                <p style="color: var(--text-secondary); line-height: 1.8;">
+                    定制你的人设Tag，影响NPC反应，功能开发中...
+                </p>
+            </div>
+        </div>
+
+        <!-- 系统设置视图 -->
+        <div class="view-container" id="settingsView">
+            <div class="settings-panel">
+                <h2 class="settings-title">⚙️ 系统设置</h2>
+                
+                <div class="setting-item">
+                    <label class="setting-label">API 配置管理</label>
+                    
+                    <div class="input-group" style="margin-bottom: 16px;">
+                        <label class="input-label">配置名称</label>
+                        <input type="text" id="apiName" placeholder="例如：我的OpenAI配置" />
+                    </div>
+                    
+                    <div class="input-group" style="margin-bottom: 16px;">
+                        <label class="input-label">API URL 代理地址</label>
+                        <input type="text" id="apiUrl" placeholder="例如：https://api.openai.com/v1" />
+                    </div>
+                    
+                    <div class="input-group" style="margin-bottom: 16px;">
+                        <label class="input-label">API Key</label>
+                        <input type="password" id="settingsApiKey" placeholder="输入你的 API Key" />
+                    </div>
+                    
+                    <button class="save-btn" style="width: auto; padding: 14px 32px;" onclick="saveApiConfig()">💾 保存配置</button>
+                </div>
+                
+                <div class="setting-item">
+                    <label class="setting-label">主题设置</label>
+                    <div class="theme-buttons">
+                        <button class="theme-btn active" data-theme="purple" onclick="changeTheme('purple')">💜 紫色</button>
+                        <button class="theme-btn" data-theme="black" onclick="changeTheme('black')">🖤 黑色</button>
+                        <button class="theme-btn" data-theme="white" onclick="changeTheme('white')">🤍 白色</button>
+                        <button class="theme-btn" data-theme="green" onclick="changeTheme('green')">💚 绿色</button>
+                        <button class="theme-btn" data-theme="blue" onclick="changeTheme('blue')">💙 蓝色</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function init() {
+            createMatrixRain();
+            loadApiConfig();
+            loadTheme();
+        }
+
+        function createMatrixRain() {
+            const bg = document.getElementById('bgAnimation');
+            const chars = '01アイウエオカキクケコサシスセソ∞§※◆★☆';
+            
+            for (let i = 0; i < 25; i++) {
+                const span = document.createElement('span');
+                span.className = 'matrix-rain';
+                span.textContent = chars[Math.floor(Math.random() * chars.length)];
+                span.style.left = Math.random() * 100 + '%';
+                span.style.animationDuration = (Math.random() * 4 + 3) + 's';
+                span.style.animationDelay = Math.random() * 5 + 's';
+                bg.appendChild(span);
+            }
+        }
+
+        function saveApiConfig() {
+            const apiName = document.getElementById('apiName').value.trim();
+            const apiUrl = document.getElementById('apiUrl').value.trim();
+            const apiKey = document.getElementById('settingsApiKey').value.trim();
+            
+            if (!apiName || !apiUrl || !apiKey) {
+                alert('⚠️ 请填写完整的 API 配置信息');
+                return;
+            }
+            
+            const config = {
+                name: apiName,
+                url: apiUrl,
+                key: apiKey
+            };
+            
+            localStorage.setItem('apiConfig', JSON.stringify(config));
+            alert('✅ API 配置已保存！');
+        }
+
+        function loadApiConfig() {
+            const savedConfig = localStorage.getItem('apiConfig');
+            if (savedConfig) {
+                try {
+                    const config = JSON.parse(savedConfig);
+                    document.getElementById('apiName').value = config.name || '';
+                    document.getElementById('apiUrl').value = config.url || '';
+                    document.getElementById('settingsApiKey').value = config.key || '';
+                } catch (e) {
+                    console.error('Failed to load API config:', e);
+                }
+            }
+        }
+
+        function enterHub() {
+            const username = document.getElementById('username').value.trim();
+            if (!username) {
+                alert('请输入用户名！');
+                return;
+            }
+            
+            document.getElementById('displayName').textContent = username;
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('mainHub').style.display = 'block';
+        }
+
+        function switchMainView(view) {
+            // 更新下拉选择器
+            document.getElementById('mainNavSelect').value = view;
+            
+            // 隐藏所有视图
+            document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
+            
+            // 显示对应视图
+            const viewMap = {
+                'hub': 'hubView',
+                'archive': 'archiveView',
+                'sanctuary': 'sanctuaryView',
+                'gallery': 'galleryView',
+                'shop': 'shopView',
+                'achievements': 'achievementsView',
+                'persona': 'personaView',
+                'settings': 'settingsView'
+            };
+            
+            const targetView = document.getElementById(viewMap[view]);
+            if (targetView) {
+                targetView.classList.add('active');
+            }
+        }
+
+        function showInstanceDetail() {
+            document.getElementById('hubView').classList.remove('active');
+            document.getElementById('detailView').classList.add('active');
+        }
+
+        function backToHub() {
+            document.getElementById('detailView').classList.remove('active');
+            document.getElementById('hubView').classList.add('active');
+        }
+
+        function changeTheme(theme) {
+            document.body.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-theme') === theme) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'purple';
+            changeTheme(savedTheme);
+        }
+
+        init();
+    </script>
+</body>
+</html>
