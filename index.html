@@ -1074,7 +1074,19 @@
                     <label class="input-label">API 密钥 (Key)</label>
                     <input type="password" class="input-modern" id="settingsApiKey" placeholder="sk-...">
                 </div>
+                <div class="input-wrapper">
+                    <label class="input-label">模型选择</label>
+                    <select class="input-modern" id="apiModel" style="cursor: pointer;">
+                        <option value="">-- 请先测试连接获取模型列表 --</option>
+                    </select>
+                </div>
 
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn-glow" style="flex: 1;" onclick="testApiConnection()">
+                        🔌 测试连接
+                    </button>
+                <div id="apiTestResult" style="margin-top: 12px; padding: 12px; border-radius: 8px; font-size: 13px; display: none;"></div>
+            </div>
                 <button class="btn-glow" onclick="saveApiConfig()">
                     💾 保存配置
                 </button>
