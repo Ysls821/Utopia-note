@@ -843,7 +843,7 @@
     <!-- 登录页面 -->
     <div class="login-page" id="loginPage">
         <div class="login-card glass-panel">
-            <h1 class="login-title">INFINITE LOVE</h1>
+            <h1 class="login-title">Utopia note</h1>
             <p class="login-subtitle">Utopia note · 乌托邦手记</p>
             
             <div class="input-wrapper">
@@ -948,7 +948,7 @@
                         <button class="btn-glow" onclick="startGame()" style="margin-bottom: 10px;">
                             开始命运之旅
                         </button>
-                        <div style="display:flex; gap:10px;">
+                        <div style="display:flex; gap:15px;">
     <button class="btn-glow" style="flex:1" onclick="startGame('start')">🆕 新旅程</button>
     <!-- 新增的继续按钮 -->
     <button class="btn-glow" style="flex:1; background:rgba(16, 185, 129, 0.2);" onclick="startGame('continue')">📂 继续剧情</button>
@@ -1396,12 +1396,38 @@
             // 返回副本详情
             switchView('detail');
         }
-
+            
+        // ===== 核心存档功能 =====
+        function saveProgress() {
+    if (!activeStoryData) return;
+    
+    const saveState = {
+        sceneId: currentSceneId, // 当前在哪一节
+        memory: activeStoryData.memory || "", // 此时此刻的剧情记忆
+        timestamp: Date.now()
+    };
+    
+    localStorage.setItem('infinite.save', JSON.stringify(saveState));
+    console.log("已自动存档:", saveState);
+    
+    // 给个视觉反馈
+    const btn = document.getElementById('btnSave');
+    if(btn) {
+        const oldText = btn.innerText;
+        btn.innerText = "✅ 已存";
+        setTimeout(() => btn.innerText = oldText, 1000);
+    }
+}
         async function loadScene(sceneId) {
+             // 1. 更新全局变量，标记当前位置
+    currentSceneId = sceneId; 
+            // 2. 只要进新剧情，立马自动存！
+    saveProgress(); 
             let scene = activeStoryData[sceneId];
             const bgEl = document.getElementById('gameBg');
             const optionsEl = document.getElementById('gameOptions');
-
+            async function loadScene(sceneId) {
+    
             // 容错：如果是 AI 生成的临时后续 ID，但本地没有数据，我们需要在这里构造一个临时的 AI 请求
             if (!scene && sceneId.startsWith('ai_')) {
                 scene = {
@@ -1707,7 +1733,7 @@
             alert('已恢复默认剧本');
         }
 
-        // ===== 最终调试版 AI 生成函数 =====
+        // ===== 终极整合版 AI 生成函数 (含记忆+存档+防报错) =====
         async function generateAiSceneText(sceneId, scene) {
             // 1. 读取配置
             const configRaw = localStorage.getItem('apiConfig');
@@ -1715,16 +1741,30 @@
             const config = JSON.parse(configRaw);
             if (!config.key) return '⚠️ API Key 为空';
 
-            // 2. 构造 URL
+            // 2. URL 智能修正 (保留之前的修复逻辑)
             let baseUrl = config.url || 'https://api.openai.com/v1';
             baseUrl = baseUrl.replace(/\/+$/, '');
             if (baseUrl.endsWith('/chat/completions')) baseUrl = baseUrl.replace(/\/chat\/completions$/, '');
             if (!baseUrl.endsWith('/v1')) baseUrl += '/v1';
             const finalUrl = baseUrl + '/chat/completions';
 
-            // 3. 提示词
-            const baseSystemPrompt = '你是一个无限流恋爱文字游戏的文案引擎。请根据提示生成剧情片段和后续选项。必须返回纯 JSON 格式：{"text": "...", "options":[{"text":"...","nextScene":"null"}]}。';
-            const userPrompt = scene.prompt || `续写剧情...`;
+            // 3. 构造带记忆的 Prompt (新增功能)
+            // 如果没有记忆，就默认是空
+            const memory = activeStoryData.memory || "";
+            
+            // 把记忆塞给 AI，告诉它这是前情提要
+            const systemInstruction = `
+你是一个文字游戏的 AI 导演。
+【前情提要】：
+${memory}
+
+【指令】：
+请接续剧情。
+1. 剧情必须连贯，严禁与前情冲突。
+2. 输出纯 JSON 格式：{"text": "剧情内容...", "options": [{"text":"选项A", "nextScene":"null"}]}。
+`.trim();
+
+            const userPrompt = scene.prompt || `当前进展到节点 ${sceneId}。请继续发展剧情。`;
 
             try {
                 const res = await fetch(finalUrl, {
@@ -1735,10 +1775,12 @@
                     },
                     body: JSON.stringify({
                         model: config.model || 'gpt-3.5-turbo',
-                        stream: false, // 👈 关键：强制关闭流式传输
+                        stream: false, // 必须关闭流式，否则你的 API 会返回空！
                         messages: [
-                            { role: 'user', content: baseSystemPrompt + "\n\n" + userPrompt } // 👈 关键：有些模型不支持 system，我把 system 拼到了 user 里
-                        ]
+                            { role: 'system', content: systemInstruction },
+                            { role: 'user', content: userPrompt }
+                        ],
+                        temperature: 0.85
                     })
                 });
 
@@ -1749,33 +1791,36 @@
 
                 const data = await res.json();
                 
-                // 👇 这里是抓鬼的关键！
-                console.log("API 原始返回:", data); 
-
-                // 尝试各种非标格式
-                const content = data.choices?.[0]?.message?.content || data.data?.content || data.content;
+                // 兼容各种奇葩 API 的返回格式
+                const content = data.choices?.[0]?.message?.content || data.data?.content;
                 
-                if (!content) {
-                    // 把整个返回结果打印在屏幕上给你看
-                    return '❌ API 返回结构异常:\n' + JSON.stringify(data, null, 2);
-                }
+                if (!content) return '❌ API 返回结构异常:\n' + JSON.stringify(data, null, 2);
 
+                let parsed;
                 try {
                     const clean = content.replace(/```json/g, '').replace(/```/g, '').trim();
-                    return JSON.parse(clean);
+                    parsed = JSON.parse(clean);
                 } catch {
-                    return content;
+                    parsed = { text: content, options: [{text:"继续", nextScene:"next"}] };
                 }
+
+                // 4. 成功后，自动追加记忆并存档 (新增功能)
+                if (parsed.text) {
+                    let newMem = memory + "\n" + parsed.text;
+                    // 只保留最近 2000 字，防止记忆太长撑爆 API
+                    if (newMem.length > 2000) newMem = "..." + newMem.slice(-2000);
+                    activeStoryData.memory = newMem;
+                    
+                    // 如果有 saveProgress 函数就调用它
+                    if (typeof saveProgress === 'function') saveProgress();
+                }
+
+                return parsed;
 
             } catch (e) {
                 return `❌ 网络错误: ${e.message}`;
             }
         }
-
-        // 其他辅助函数
-        function changeTheme(theme) { document.body.setAttribute('data-theme', theme); localStorage.setItem('theme', theme); }
-        function loadTheme() { changeTheme(localStorage.getItem('theme') || 'purple'); }
-        function triggerAvatarUpload() { document.getElementById('persona-avatar-input').click(); }
         
         // 启动
         window.onload = init;
