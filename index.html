@@ -948,7 +948,11 @@
                         <button class="btn-glow" onclick="startGame()" style="margin-bottom: 10px;">
                             开始命运之旅
                         </button>
-                        <button class="btn-glow" onclick="startGame('endless')" style="background: rgba(255,255,255,0.1);">
+                        <div style="display:flex; gap:10px;">
+    <button class="btn-glow" style="flex:1" onclick="startGame('start')">🆕 新旅程</button>
+    <!-- 新增的继续按钮 -->
+    <button class="btn-glow" style="flex:1; background:rgba(16, 185, 129, 0.2);" onclick="startGame('continue')">📂 继续剧情</button>
+                        </div>                        <button class="btn-glow" onclick="startGame('endless')" style="background: rgba(255,255,255,0.1);">
                             无尽模式
                         </button>
                     </div>
@@ -1340,7 +1344,7 @@
             switchView('detail');
         }
 
-        // ===== 游戏流程 =====
+        // ===== 增强版：开始游戏逻辑 =====
         function startGame(mode) {
             const mainHub = document.getElementById('mainHub');
             const game = document.getElementById('gameContainer');
@@ -1350,12 +1354,29 @@
             if (dock) dock.style.display = 'none';
             if (game) game.style.display = 'block';
 
-            // 尝试从 main_story 获取起始节点
+            // 1. 如果是点击“继续游戏”
+            if (mode === 'continue') {
+                const saveRaw = localStorage.getItem('infinite.save');
+                if (saveRaw) {
+                    const save = JSON.parse(saveRaw);
+                    // 恢复记忆
+                    activeStoryData.memory = save.memory || ''; 
+                    loadScene(save.currentSceneId);
+                    return;
+                } else {
+                    alert("没有找到存档，将开始新游戏");
+                }
+            }
+
+            // 2. 如果是新游戏，清空记忆
+            activeStoryData.memory = "故事开端。"; // 初始化记忆
+            localStorage.removeItem('infinite.save'); // 清除旧档
+
+            // ... 原有的找起始节点逻辑 ...
             let firstScene = 'start';
             if (mode === 'endless' && activeStoryData['plotBeginAi']) {
                 firstScene = 'plotBeginAi';
             } else if (!activeStoryData[firstScene]) {
-                // 如果没有 'start'，尝试找第一个Key
                 const keys = Object.keys(activeStoryData);
                 if (keys.length > 0) firstScene = keys[0];
             }
