@@ -503,6 +503,57 @@
         }
 
         /* 角色头像 */
+        /* 身份切换栏 (Insta Story Style) */
+.persona-strip-container {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding: 10px 4px;
+    scrollbar-width: none; /* 隐藏滚动条 */
+}
+.persona-strip-container::-webkit-scrollbar { display: none; }
+
+.story-ring {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    width: 64px;
+}
+
+.story-avatar-wrap {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    padding: 2px;
+    /* 未选中状态是灰色圈，选中或有内容可以是彩色圈 */
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); 
+    position: relative;
+}
+
+.story-avatar-wrap.new-btn {
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.story-avatar-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid #000; /* 与背景色一致形成间隔 */
+    background: #222;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.story-avatar-inner img { width: 100%; height: 100%; object-fit: cover; }
+.story-name { font-size: 11px; color: #fff; max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }        
         .char-scroll {
             display: flex;
             gap: 20px;
@@ -1610,28 +1661,98 @@
             }
         }
         
-        // 补充缺失的 Persona 函数，防止报错
+        // ==========================================
+        //  新的身份栏渲染逻辑 (Insta Story 风格)
+        // ==========================================
         function renderPersonaStrip() {
-             const strip = document.getElementById('persona-strip');
-             if(!strip) return;
-             strip.innerHTML = '';
-             const list = loadPersonas();
-             if(list.length === 0) {
-                 strip.innerHTML = '<span style="color:var(--text-muted); font-size:12px; padding:10px;">暂无设定</span>';
-                 return;
-             }
-             list.forEach((p, idx) => {
-                 const d = document.createElement('div');
-                 d.className = 'char-item';
-                 d.innerHTML = `
-                   <div class="char-avatar" onclick="loadPersonaDetail(${idx})">
-                      ${p.avatar ? `<img src="${p.avatar}">` : '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:24px;">👤</div>'}
-                   </div>
-                   <div class="char-name">${p.name || '未命名'}</div>
-                 `;
-                 strip.appendChild(d);
-             });
+            const strip = document.getElementById('persona-strip');
+            if (!strip) return;
+            
+            // 强制应用你刚才添加的新 CSS 类名
+            strip.className = 'persona-strip-container'; 
+            strip.innerHTML = '';
+
+            // 1. 【固定添加】第一个圈圈：“+ 新身份”
+            const newBtn = document.createElement('div');
+            newBtn.className = 'story-ring';
+            newBtn.onclick = () => resetPersonaForm(); // 点击清空表单
+            newBtn.innerHTML = `
+                <div class="story-avatar-wrap new-btn">
+                    <div class="story-avatar-inner">
+                        <span style="font-size:24px; color:#fff;">+</span>
+                    </div>
+                </div>
+                <div class="story-name">新身份</div>
+            `;
+            strip.appendChild(newBtn);
+
+            // 2. 【动态读取】渲染你保存过的身份列表
+            const list = loadPersonas();
+            list.forEach((p) => {
+                const item = document.createElement('div');
+                item.className = 'story-ring';
+                item.onclick = () => loadPersonaDetail(p); // 点击加载这个身份
+                
+                // 如果没有头像，显示默认 Emoji
+                const imgContent = p.avatar 
+                    ? `<img src="${p.avatar}">` 
+                    : `<span style="font-size:20px">👤</span>`;
+
+                // 选中状态的高亮逻辑（可选，给当前选中的加个边框颜色变化）
+                const isSelected = (currentPersonaId === p.id);
+                const activeStyle = isSelected ? 'border: 2px solid #fff;' : '';
+
+                item.innerHTML = `
+                    <div class="story-avatar-wrap" style="${activeStyle}">
+                        <div class="story-avatar-inner">
+                            ${imgContent}
+                        </div>
+                    </div>
+                    <div class="story-name">${p.name || '未命名'}</div>
+                `;
+                strip.appendChild(item);
+            });
         }
+
+        // --- 下面这两个是配套的辅助工具，直接加在 renderPersonaStrip 下面 ---
+
+        // 功能：点击“+”号时，清空表单，准备创建新人
+        function resetPersonaForm() {
+            document.getElementById('persona-name').value = '';
+            document.getElementById('persona-desc').value = '';
+            document.getElementById('persona-avatar-preview').style.display = 'none';
+            document.getElementById('persona-placeholder').style.display = 'block';
+            currentPersonaId = null; // 标记为新模式
+            
+            // 简单的震动反馈
+            if(navigator.vibrate) navigator.vibrate(20);
+            
+            // 提示用户
+            showToastMsg("✨ 已切换至新身份模式");
+            
+            // 重新渲染一下顶部栏（为了去掉其他头像的选中状态）
+            renderPersonaStrip();
+        }
+
+        // 功能：点击某个头像时，把他的信息填进表单
+        function loadPersonaDetail(p) {
+            document.getElementById('persona-name').value = p.name || '';
+            document.getElementById('persona-desc').value = p.desc || '';
+            currentPersonaId = p.id; // 记录当前正在编辑谁
+            
+            if (p.avatar) {
+                const img = document.getElementById('persona-avatar-preview');
+                img.src = p.avatar;
+                img.style.display = 'block';
+                document.getElementById('persona-placeholder').style.display = 'none';
+            } else {
+                document.getElementById('persona-avatar-preview').style.display = 'none';
+                document.getElementById('persona-placeholder').style.display = 'block';
+            }
+            
+            // 重新渲染以更新选中高亮
+            renderPersonaStrip();
+            }
         
         function savePersona() {
             const name = document.getElementById('persona-name').value;
