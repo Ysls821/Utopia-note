@@ -791,6 +791,23 @@
             cursor: pointer;
         }
 
+        /* 剧本编辑器区域 */
+        .story-upload-area {
+            margin-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+        }
+        .file-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
         /* 响应式 */
         @media (max-width: 768px) {
             .detail-layout {
@@ -848,7 +865,6 @@
         <div class="top-bar">
             <div class="user-pill glass-panel">
                 <div class="avatar-small">
-                    <!-- 图床位置：用户头像 <img src="YOUR_IMAGE_URL" alt="Avatar"> -->
                     <div style="font-size: 18px;">👤</div>
                 </div>
                 <span style="font-weight: 600; font-size: 14px;" id="displayName">旅行者</span>
@@ -873,7 +889,6 @@
                 <!-- 可玩副本 -->
                 <div class="card-instance glass-panel" onclick="showInstanceDetail()">
                     <div class="card-cover">
-                        <!-- 图床位置：<img src="YOUR_IMAGE_URL" alt="紫禁城"> -->
                         <img src="https://images.unsplash.com/photo-1599707367072-cd6ad6cb3d2e?auto=format&fit=crop&w=600&q=80" alt="紫禁城">
                         <span class="card-badge">古代宫廷</span>
                     </div>
@@ -911,7 +926,6 @@
             <!-- 左图右文头图区域 -->
             <div class="detail-layout glass-panel">
                 <div class="detail-cover">
-                    <!-- 图床位置：<img src="YOUR_IMAGE_URL" alt="紫禁城迷梦封面"> -->
                     <img src="https://images.unsplash.com/photo-1599707367072-cd6ad6cb3d2e?auto=format&fit=crop&w=1200&q=80" alt="紫禁城迷梦封面">
                 </div>
                 <div class="detail-info">
@@ -947,7 +961,6 @@
                     <!-- 角色 1 -->
                     <div class="char-item">
                         <div class="char-avatar">
-                            <!-- 图床位置：<img src="YOUR_IMAGE_URL" alt="皇子"> -->
                             <div style="font-size: 40px; display:flex; align-items:center; justify-content:center; height:100%;">👑</div>
                         </div>
                         <div class="char-name">夜幽皇子</div>
@@ -955,7 +968,6 @@
                     <!-- 角色 2 -->
                     <div class="char-item">
                         <div class="char-avatar">
-                            <!-- 图床位置：<img src="YOUR_IMAGE_URL" alt="侍卫"> -->
                             <div style="font-size: 40px; display:flex; align-items:center; justify-content:center; height:100%;">🗡️</div>
                         </div>
                         <div class="char-name">侍卫云墨</div>
@@ -963,7 +975,6 @@
                     <!-- 角色 3 -->
                     <div class="char-item">
                         <div class="char-avatar">
-                            <!-- 图床位置：<img src="YOUR_IMAGE_URL" alt="术士"> -->
                             <div style="font-size: 40px; display:flex; align-items:center; justify-content:center; height:100%;">🎭</div>
                         </div>
                         <div class="char-name">神秘术士</div>
@@ -1084,16 +1095,46 @@
                 <div style="display: flex; gap: 12px;">
                     <button class="btn-glow" style="flex: 1;" onclick="testApiConnection()">
                         测试连接
-                        
                     </button>
+                    <button class="btn-glow" style="flex: 1;" onclick="saveApiConfig()">
+                        保存配置
+                    </button>
+                </div>
+                
                 <div id="apiTestResult" style="margin-top: 12px; padding: 12px; border-radius: 8px; font-size: 13px; display: none;"></div>
             </div>
-                <button class="btn-glow" onclick="saveApiConfig()">
-                     保存配置
-                </button>
+
+            <!-- 剧本管理 (新增) -->
+            <div class="settings-container glass-panel setting-group" style="margin-top: 24px;">
+                <h3 style="margin-bottom: 20px; font-size: 18px;">剧本管理</h3>
+                <div style="color: var(--text-muted); font-size: 13px; margin-bottom: 12px;">
+                    上传编辑器导出的 JSON 文件来替换默认剧情。
+                </div>
+                
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <label class="file-btn">
+                        📂 上传剧本文件
+                        <input type="file" id="storyFileUpload" accept=".json" style="display:none;" onchange="handleStoryUpload(event)">
+                    </label>
+                    <button class="btn-glow" style="background: rgba(239, 68, 68, 0.5); width: auto;" onclick="resetStory()">
+                        🗑️ 恢复默认
+                    </button>
+                </div>
+                <div id="storyUploadMsg" style="margin-top:8px; font-size:12px; color:#10b981;"></div>
             </div>
-               <div id="apiTestResult" style="margin-top: 12px; padding: 12px; border-radius: 8px; font-size: 13px; display: none;"></div>
+
+            <!-- 主题设置 -->
+            <div class="settings-container glass-panel setting-group" style="margin-top: 24px;">
+                <h3 style="margin-bottom: 20px; font-size: 18px;">主题风格</h3>
+                <div class="theme-grid">
+                    <button class="theme-btn active" data-theme="purple" onclick="changeTheme('purple')">💜 紫色</button>
+                    <button class="theme-btn" data-theme="black" onclick="changeTheme('black')">🖤 黑色</button>
+                    <button class="theme-btn" data-theme="white" onclick="changeTheme('white')">🤍 白色</button>
+                    <button class="theme-btn" data-theme="green" onclick="changeTheme('green')">💚 绿色</button>
+                    <button class="theme-btn" data-theme="blue" onclick="changeTheme('blue')">💙 蓝色</button>
+                </div>
             </div>
+        </div>
 
         <!-- 底部 Dock 导航 -->
         <div class="dock-nav glass-panel">
@@ -1110,7 +1151,7 @@
                 <svg class="icon dock-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
             </div>
             <div class="dock-item" onclick="switchView('settings')" title="系统设置">
-                <svg class="icon dock-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <svg class="icon dock-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0-1.51 1z"></path></svg>
             </div>
         </div>
     </div>
@@ -1208,7 +1249,7 @@
         function init() {
             loadApiConfig();
             loadTheme();
-            loadCustomStory();
+            loadCustomStory(); // 这里会自动加载你上传的剧本
 
             // 用户名自动回填 + 自动进入主界面
             const nameInput = document.getElementById('username');
@@ -1227,7 +1268,6 @@
             });
 
             initPersonas();
-            initStoryEditor();
         }
 
         // 切换视图逻辑
@@ -1297,7 +1337,20 @@
             if (dock) dock.style.display = 'none';
             if (game) game.style.display = 'block';
 
-            const firstScene = mode === 'endless' ? 'plotBeginAi' : 'start';
+            // 尝试从 main_story 获取起始节点
+            // 如果是新版分板块JSON，场景可能不在顶层，而是在 main_story 里
+            // 如果没有 'start'，就找 JSON 里的第一个 key
+            let firstScene = 'start';
+            if (!activeStoryData[firstScene]) {
+                // 尝试找第一个Key
+                const keys = Object.keys(activeStoryData);
+                if (keys.length > 0) firstScene = keys[0];
+            }
+            
+            if (mode === 'endless' && activeStoryData['plotBeginAi']) {
+                firstScene = 'plotBeginAi';
+            }
+
             loadScene(firstScene);
         }
 
@@ -1320,12 +1373,13 @@
             const optionsEl = document.getElementById('gameOptions');
 
             if (!scene) {
+                alert('剧本结束或场景丢失：' + sceneId);
                 exitGame();
                 return;
             }
 
             if (bgEl) {
-                bgEl.style.backgroundImage = scene.bg ? `url(${scene.bg})` : 'none';
+                bgEl.style.backgroundImage = scene.bg || scene.background ? `url(${scene.bg || scene.background})` : 'none';
             }
 
             if (optionsEl) {
@@ -1334,7 +1388,8 @@
                     scene.options.forEach(opt => {
                         const btn = document.createElement('button');
                         btn.className = 'game-option-btn';
-                        btn.textContent = opt.text;
+                        // 兼容编辑器字段 label / text，nextScene / nextScene
+                        btn.textContent = opt.text || opt.label; 
                         btn.onclick = () => {
                             if (opt.nextScene) {
                                 loadScene(opt.nextScene);
@@ -1357,7 +1412,7 @@
             if (scene.type === 'ai') {
                 const textEl = document.getElementById('gameText');
                 if (textEl) {
-                    textEl.textContent = '...';
+                    textEl.textContent = '⚡ 正在连接主神网络生成剧情...';
                 }
 
                 const generated = await generateAiSceneText(sceneId, scene);
@@ -1371,7 +1426,7 @@
                         generated.options.forEach(opt => {
                             const btn = document.createElement('button');
                             btn.className = 'game-option-btn';
-                            btn.textContent = opt.text;
+                            btn.textContent = opt.text || opt.label;
                             btn.onclick = () => {
                                 if (opt.nextScene) {
                                     loadScene(opt.nextScene);
@@ -1422,11 +1477,12 @@
             textEl.textContent = typingText;
         }
         
-        // API 配置保存（v20 版本的三个字段）
+        // API 配置保存
         function saveApiConfig() {
             const apiName = document.getElementById('apiName').value.trim();
             const apiUrl = document.getElementById('apiUrl').value.trim();
             const apiKey = document.getElementById('settingsApiKey').value.trim();
+            const apiModel = document.getElementById('apiModel').value.trim();
             
             if (!apiName || !apiUrl || !apiKey) {
                 alert('⚠️ 请填写完整的 API 配置信息');
@@ -1436,13 +1492,14 @@
             const config = {
                 name: apiName,
                 url: apiUrl,
-                key: apiKey
+                key: apiKey,
+                model: apiModel || 'gpt-3.5-turbo'
             };
             
             localStorage.setItem('apiConfig', JSON.stringify(config));
             
             // 保存成功反馈
-            const btn = document.querySelector('#view-settings .btn-glow');
+            const btn = event.target;
             const originalText = btn.innerHTML;
             btn.innerHTML = '✅ 配置已保存';
             btn.style.background = '#10b981';
@@ -1461,6 +1518,19 @@
                     document.getElementById('apiName').value = config.name || '';
                     document.getElementById('apiUrl').value = config.url || '';
                     document.getElementById('settingsApiKey').value = config.key || '';
+                    
+                    // 如果有保存的模型，添加到下拉框
+                    if (config.model) {
+                        const modelSelect = document.getElementById('apiModel');
+                        // 如果列表里没有这个选项，动态加一个
+                        if (!Array.from(modelSelect.options).some(opt => opt.value === config.model)) {
+                             const option = document.createElement('option');
+                             option.value = config.model;
+                             option.textContent = config.model;
+                             modelSelect.appendChild(option);
+                        }
+                        modelSelect.value = config.model;
+                    }
                 } catch (e) {
                     console.error('Config load failed', e);
                 }
@@ -1482,7 +1552,11 @@
 
             try {
                 // 尝试获取模型列表
-                const modelsUrl = apiUrl.replace(/\/$/, '').replace(/\/chat\/completions$/, '') + '/models';
+                // 兼容：有些代理需要 /v1/models，有些是 /models
+                let modelsUrl = apiUrl.replace(/\/$/, '');
+                if (modelsUrl.endsWith('/v1')) modelsUrl = modelsUrl.replace(/\/v1$/, '');
+                if (modelsUrl.endsWith('/chat/completions')) modelsUrl = modelsUrl.replace(/\/chat\/completions$/, '');
+                modelsUrl += '/models';
                 
                 const res = await fetch(modelsUrl, {
                     method: 'GET',
@@ -1601,51 +1675,62 @@
         }
 
         // ===== 剧本管理：从 localStorage 读取 / 写入 =====
+        // 核心修改：适配编辑器导出的多层级结构
         function loadCustomStory() {
             const raw = localStorage.getItem(STORY_STORAGE);
             if (!raw) return;
             try {
                 const parsed = JSON.parse(raw);
                 if (parsed && typeof parsed === 'object') {
-                    activeStoryData = parsed;
+                    // 兼容编辑器导出的结构：提取 main_story
+                    if (parsed.main_story) {
+                        activeStoryData = parsed.main_story;
+                        // 这里可以顺便把 side_stories 合并进去，或者按需加载
+                        // 为了简单，我们先把 main_story 作为主剧本
+                    } else {
+                        // 如果是旧格式（扁平的），直接用
+                        activeStoryData = parsed;
+                    }
                 }
             } catch (e) {
                 console.warn('自定义剧本解析失败，已忽略：', e);
             }
         }
-
-        function initStoryEditor() {
-            const editor = document.getElementById('storyEditor');
-            if (!editor) return;
-            editor.value = JSON.stringify(activeStoryData, null, 2);
-        }
-
-        function updateStoryFromEditor() {
-            const editor = document.getElementById('storyEditor');
-            if (!editor) return;
-            const value = editor.value.trim();
-            if (!value) {
-                alert('剧本内容不能为空');
-                return;
-            }
-            try {
-                const parsed = JSON.parse(value);
-                if (!parsed || typeof parsed !== 'object') {
-                    alert('JSON 顶层必须是一个对象');
-                    return;
+        
+        // 剧本上传处理
+        function handleStoryUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const json = JSON.parse(e.target.result);
+                    // 验证一下是不是有效的剧本包
+                    if (!json.main_story && !json.start) {
+                        throw new Error("格式不对，必须包含 main_story 或 start 节点");
+                    }
+                    
+                    // 保存到 LocalStorage
+                    localStorage.setItem(STORY_STORAGE, JSON.stringify(json));
+                    
+                    // 立即生效
+                    loadCustomStory();
+                    
+                    document.getElementById('storyUploadMsg').textContent = `✅ 成功加载: ${file.name}`;
+                    alert("剧本上传成功！请点击副本开始游戏。");
+                    
+                } catch (err) {
+                    alert("剧本文件格式错误: " + err.message);
                 }
-                activeStoryData = parsed;
-                localStorage.setItem(STORY_STORAGE, JSON.stringify(parsed));
-                alert('剧本已更新并立即生效');
-            } catch (e) {
-                alert('JSON 解析失败，请检查格式：' + e.message);
-            }
+            };
+            reader.readAsText(file);
         }
 
         function resetStory() {
             activeStoryData = storyData;
             localStorage.removeItem(STORY_STORAGE);
-            initStoryEditor();
+            document.getElementById('storyUploadMsg').textContent = "";
             alert('已恢复默认剧本');
         }
 
@@ -1666,9 +1751,15 @@
                 return '（API Key 为空，请在系统设置中填写后再试）';
             }
 
-            const apiUrl = (config.url || 'https://api.openai.com/v1/chat/completions').replace(/\/$/, '') + '/chat/completions';
+            // 处理 URL 结尾
+            let apiUrl = config.url || 'https://api.openai.com/v1';
+            if (apiUrl.endsWith('/')) apiUrl = apiUrl.slice(0, -1);
+            if (!apiUrl.endsWith('/chat/completions')) {
+                if (apiUrl.endsWith('/v1')) apiUrl += '/chat/completions';
+                else apiUrl += '/v1/chat/completions';
+            }
 
-            const baseSystemPrompt = '你是一个无限流恋爱文字游戏的文案引擎。根据提示生成中文剧情片段和后续选项，输出 JSON 格式：{"text": "...", "options":[{"text":"选项文案","nextScene":"下一个场景 id 或 null"}]}，不要输出多余文字。';
+            const baseSystemPrompt = '你是一个无限流恋爱文字游戏的文案引擎。根据提示生成中文剧情片段和后续选项，输出纯 JSON 格式：{"text": "...", "options":[{"text":"选项文案","nextScene":"下一个场景 id 或 null"}]}。请不要输出 markdown 标记，只输出 json 字符串。';
 
             const userPrompt = scene.prompt || `为场景 ${sceneId} 续写一段 200-300 字的剧情，并给出 2 个后续行为选项。`;
 
@@ -1680,7 +1771,7 @@
                         'Authorization': 'Bearer ' + config.key
                     },
                     body: JSON.stringify({
-                        model: config.model || 'gpt-4.1-mini',
+                        model: config.model || 'gpt-3.5-turbo',
                         messages: [
                             { role: 'system', content: baseSystemPrompt },
                             { role: 'user', content: userPrompt }
@@ -1700,7 +1791,9 @@
 
                 // 期望是 JSON，如果解析失败就把原文当作纯文本
                 try {
-                    const parsed = JSON.parse(content);
+                    // 有时候 AI 会带 ```json ```，需要去掉
+                    let cleanContent = content.replace(/```json/g, '').replace(/```/g, '').trim();
+                    const parsed = JSON.parse(cleanContent);
                     return parsed;
                 } catch {
                     return content;
@@ -1849,3 +1942,6 @@
     </script>
 </body>
 </html>
+          
+          
+                  
