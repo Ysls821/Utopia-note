@@ -3,24 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>乌托邦·剧本工坊 v3.1</title>
+    <title>乌托邦·剧本工坊 v3.2 (Pro)</title>
     <style>
         :root {
-            --bg-dark: #0f0720;
-            --bg-panel: rgba(30, 30, 35, 0.9);
-            --primary: #d946ef;
+            /* 稍微收敛一点的工业深色风 */
+            --bg-dark: #09090b;       /* 更深邃的黑 */
+            --bg-panel: #18181b;      /* 面板背景 */
+            --bg-input: #27272a;      /* 输入框背景 */
+            --primary: #d946ef;       /* 核心主色 */
             --secondary: #8b5cf6;
             --success: #10b981;
-            --text: #ffffff;
-            --text-muted: rgba(255,255,255,0.6);
-            --border: rgba(255,255,255,0.1);
+            --danger: #ef4444;
+            --text: #e4e4e7;          /* 亮灰白 */
+            --text-muted: #a1a1aa;
+            --border: #3f3f46;        /* 更有存在感的边框 */
         }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body { 
             margin: 0; 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
             background: var(--bg-dark); 
             color: var(--text); 
             height: 100vh; 
@@ -29,21 +32,21 @@
             overflow: hidden;
         }
 
-        /* === 布局系统 === */
-        .app-container {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-            position: relative;
+        /* SVG 图标通用样式 */
+        .svg-icon {
+            width: 18px; height: 18px; fill: none; stroke: currentColor; 
+            stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
         }
+        .nav-btn .svg-icon { width: 22px; height: 22px; }
+
+        /* === 布局系统 === */
+        .app-container { display: flex; flex: 1; overflow: hidden; position: relative; }
 
         /* PC 左侧导航 */
         .pc-nav {
-            width: 60px;
+            width: 64px;
             background: #000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            display: flex; flex-direction: column; align-items: center;
             padding-top: 20px;
             border-right: 1px solid var(--border);
             z-index: 10;
@@ -51,44 +54,37 @@
 
         /* 列表栏 */
         .sidebar {
-            width: 240px;
+            width: 260px;
             background: var(--bg-panel);
             border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
+            display: flex; flex-direction: column;
         }
 
         /* 编辑区 */
         .main-editor {
             flex: 1;
-            padding: 20px;
+            padding: 24px;
             overflow-y: auto;
-            background: #1a1a1e;
+            background: #0f0f11;
             position: relative;
         }
 
         /* 预览区 */
         .preview-panel {
-            width: 360px;
-            background: #000;
+            width: 380px;
+            background: #050505;
             border-left: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            position: relative;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 20px; position: relative;
         }
 
         /* === 移动端适配 === */
         .mobile-tab-bar {
-            display: none;
-            height: 60px;
-            background: rgba(20, 20, 20, 0.95);
-            backdrop-filter: blur(10px);
+            display: none; height: 60px;
+            background: rgba(24, 24, 27, 0.98);
             border-top: 1px solid var(--border);
-            justify-content: space-around;
-            align-items: center;
+            justify-content: space-around; align-items: center;
             z-index: 100;
         }
         .tab-item {
@@ -96,69 +92,81 @@
             color: var(--text-muted); font-size: 10px; gap: 4px; height: 100%;
         }
         .tab-item.active { color: var(--primary); }
-        .tab-icon { font-size: 20px; }
 
         .mobile-top-nav {
-            display: none; overflow-x: auto; gap: 10px; padding: 10px;
+            display: none; overflow-x: auto; gap: 8px; padding: 10px;
             background: #000; border-bottom: 1px solid var(--border);
         }
 
         /* === 组件样式 === */
         .nav-btn {
-            width: 40px; height: 40px; margin-bottom: 10px;
-            border-radius: 10px; border: 1px solid transparent;
-            background: rgba(255,255,255,0.05); color: #aaa;
-            cursor: pointer; font-size: 18px;
-            display: flex; align-items: center; justify-content: center;
+            width: 44px; height: 44px; margin-bottom: 12px;
+            border-radius: 8px; border: 1px solid transparent;
+            background: transparent; color: var(--text-muted);
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
             transition: all 0.2s;
         }
-        .nav-btn.active { background: var(--primary); color: white; box-shadow: 0 0 10px var(--primary); }
-        .mobile-top-nav .nav-btn { flex: 0 0 auto; margin: 0; width: auto; padding: 0 16px; font-size: 14px; }
+        .nav-btn:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+        .nav-btn.active { background: var(--primary); color: white; border-color: transparent; }
         
+        .mobile-top-nav .nav-btn { width: auto; padding: 0 16px; font-size: 13px; height: 36px; border: 1px solid var(--border); }
+        .mobile-top-nav .nav-btn.active { border-color: var(--primary); }
+
         .scene-list { flex: 1; overflow-y: auto; list-style: none; padding: 0; margin: 0; }
-        .scene-item { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; cursor: pointer; display: flex; justify-content: space-between; }
-        .scene-item:active { background: rgba(255,255,255,0.1); }
-        .scene-item.active { background: rgba(217, 70, 239, 0.1); border-left: 3px solid var(--primary); }
+        .scene-item { 
+            padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,0.03); 
+            font-size: 13px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+            color: var(--text-muted);
+        }
+        .scene-item:hover { background: rgba(255,255,255,0.02); }
+        .scene-item.active { background: rgba(217, 70, 239, 0.08); border-left: 3px solid var(--primary); color: var(--text); }
 
         /* 表单控件 */
-        .form-group { margin-bottom: 16px; }
-        label { display: block; margin-bottom: 6px; font-size: 12px; color: var(--primary); font-weight: 600; }
-        input, textarea, select {
-            width: 100%; padding: 12px;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid var(--border);
-            color: white; border-radius: 8px;
-            font-size: 14px; outline: none;
-            transition: border 0.3s;
-        }
-        input:focus, textarea:focus, select:focus { border-color: var(--secondary); }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-muted); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase;}
         
-        .btn { padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; color: white; font-weight: 600; }
-        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); }
-        .btn-success { background: var(--success); box-shadow: 0 0 15px rgba(16, 185, 129, 0.3); }
-        .btn-danger { background: #ef4444; }
-        .btn-full { width: 100%; padding: 12px; margin-top: 10px; font-size: 14px; }
+        input, textarea, select {
+            width: 100%; padding: 12px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text); border-radius: 6px;
+            font-size: 14px; outline: none;
+            transition: all 0.2s;
+            font-family: monospace; /* 编辑器就要用等宽字体 */
+        }
+        input:focus, textarea:focus, select:focus { border-color: var(--primary); background: #2e2e33; }
+        
+        .btn { padding: 9px 18px; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; color: white; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; justify-content: center; }
+        .btn-primary { background: var(--primary); }
+        .btn-success { background: var(--success); }
+        .btn-danger { background: var(--danger); }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
+        .btn-outline:hover { border-color: var(--text); color: var(--text); }
+        .btn-full { width: 100%; padding: 12px; margin-top: 10px; }
         .btn-float-save { margin-top: 30px; margin-bottom: 50px; }
 
-        .option-card { background: rgba(255,255,255,0.05); padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid var(--border); }
+        /* 图片上传组合控件 */
+        .image-input-group { display: flex; gap: 8px; }
+        .image-preview-mini { width: 44px; height: 44px; background: #000; border: 1px solid var(--border); border-radius: 4px; object-fit: cover; display: none; }
+
+        .option-card { background: rgba(255,255,255,0.02); padding: 12px; margin-bottom: 12px; border-radius: 6px; border: 1px solid var(--border); }
 
         /* === 虚拟手机预览器 === */
         .phone-frame {
-            width: 100%; height: 100%;
-            max-width: 320px; max-height: 600px;
-            border-radius: 24px;
-            border: 4px solid #333;
+            width: 320px; height: 600px;
+            border-radius: 30px;
+            border: 8px solid #222;
             position: relative;
             overflow: hidden;
             background: #000;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
         }
         .phone-bg {
             position: absolute; inset: 0;
             background-size: cover; background-position: center;
             filter: brightness(0.6);
             transition: background-image 0.3s;
-            background-color: #222; /* 默认底色 */
+            background-color: #111;
         }
         .phone-ui {
             position: absolute; bottom: 0; left: 0; right: 0;
@@ -166,18 +174,18 @@
             display: flex; flex-direction: column; gap: 10px;
         }
         .phone-text-box {
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(10px);
-            padding: 15px; border-radius: 16px;
-            font-size: 13px; line-height: 1.6; color: #fff;
+            background: rgba(20, 20, 25, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 16px; border-radius: 16px;
+            font-size: 14px; line-height: 1.6; color: #fff;
             border: 1px solid rgba(255,255,255,0.1);
             min-height: 80px;
         }
         .phone-btn {
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.6);
             color: white; border: 1px solid rgba(255,255,255,0.2);
-            padding: 8px 12px; border-radius: 20px;
-            font-size: 12px; text-align: center;
+            padding: 10px 14px; border-radius: 20px;
+            font-size: 13px; text-align: center;
             margin-right: 6px; margin-bottom: 6px; display: inline-block;
         }
 
@@ -187,8 +195,8 @@
             .app-container > div { display: none; width: 100%; } 
             .app-container > div.active-mobile-view { display: flex; } 
             .sidebar { width: 100%; border: none; }
-            .preview-panel { width: 100%; border: none; padding: 0; }
-            .phone-frame { width: 100%; height: 100%; max-width: none; max-height: none; border: none; border-radius: 0; }
+            .preview-panel { width: 100%; border: none; padding: 0; background: #000; }
+            .phone-frame { width: 100%; height: 100%; border: none; border-radius: 0; }
             .mobile-tab-bar { display: flex; }
             .mobile-top-nav { display: flex; }
         }
@@ -199,6 +207,9 @@
 </head>
 <body>
 
+    <input type="file" id="globalImageInput" accept="image/*" style="display:none">
+    <input type="file" id="importFile" style="display:none" onchange="importJson(this)">
+
     <div class="mobile-top-nav" id="mobileTopNav">
         <button class="nav-btn active" onclick="switchSection('world')">🌍 世界</button>
         <button class="nav-btn" onclick="switchSection('main')">📖 主线</button>
@@ -208,19 +219,33 @@
 
     <div class="app-container">
         <div class="pc-nav">
-            <button class="nav-btn active" onclick="switchSection('world')" title="世界观">🌍</button>
-            <button class="nav-btn" onclick="switchSection('main')" title="主线剧情">📖</button>
-            <button class="nav-btn" onclick="switchSection('branch')" title="普通支线">🌿</button>
-            <button class="nav-btn" onclick="switchSection('chars')" title="角色设定">👤</button>
+            <button class="nav-btn active" onclick="switchSection('world')" title="世界观">
+                <svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            </button>
+            <button class="nav-btn" onclick="switchSection('main')" title="主线剧情">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            </button>
+            <button class="nav-btn" onclick="switchSection('branch')" title="普通支线">
+                <svg class="svg-icon" viewBox="0 0 24 24"><line x1="6" y1="3" x2="6" y2="15"></line><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 9a9 9 0 0 1-9 9"></path></svg>
+            </button>
+            <button class="nav-btn" onclick="switchSection('chars')" title="角色设定">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </button>
             <div style="flex:1"></div>
-            <button class="nav-btn" onclick="exportJson()" title="导出" style="background:#10b981; color:white;">💾</button>
-            <button class="nav-btn" onclick="document.getElementById('importFile').click()" title="导入" style="background:#3b82f6; color:white;">📂</button>
+            <button class="nav-btn" onclick="exportJson()" title="导出" style="color:var(--success);">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+            </button>
+            <button class="nav-btn" onclick="document.getElementById('importFile').click()" title="导入" style="color:var(--secondary);">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            </button>
         </div>
 
         <div class="sidebar active-mobile-view" id="panel-list">
-            <div style="padding: 15px; border-bottom: 1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
-                <h3 id="sectionTitle" style="margin:0; font-size:16px;">世界观</h3>
-                <button class="btn btn-primary" style="padding:6px 12px;" onclick="addItem()">+ 新建</button>
+            <div style="padding: 20px; border-bottom: 1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+                <h3 id="sectionTitle" style="margin:0; font-size:16px; font-weight:600; letter-spacing:1px;">世界观</h3>
+                <button class="btn btn-primary" style="padding:6px 10px;" onclick="addItem()">
+                    <svg class="svg-icon" style="width:14px;height:14px;" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </button>
             </div>
             <ul class="scene-list" id="itemList"></ul>
         </div>
@@ -235,26 +260,37 @@
                     <label>背景故事简介</label>
                     <textarea id="worldDesc" style="height: 300px;" oninput="saveWorld()"></textarea>
                 </div>
-                <button class="btn btn-success btn-full btn-float-save" onclick="manualSave()">💾 保存并刷新预览</button>
+                <button class="btn btn-success btn-full btn-float-save" onclick="manualSave()">
+                    <svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                    保存并刷新预览
+                </button>
             </div>
 
             <div id="formChar" class="editor-form" style="display:none;">
                 <div id="charEditorContainer">
-                    <div class="form-group"><label>ID (自动生成)</label><input type="text" id="charId" disabled style="opacity:0.5;"></div>
+                    <div class="form-group"><label>ID (自动生成)</label><input type="text" id="charId" disabled style="opacity:0.5; font-family:monospace; color:var(--text-muted);"></div>
                     <div class="form-group"><label>姓名</label><input type="text" id="charName" oninput="saveCurrentItem()"></div>
                     <div class="form-group"><label>人设 (AI 扮演指令)</label><textarea id="charPersona" style="height:120px;" oninput="saveCurrentItem()"></textarea></div>
-                    <div class="form-group"><label>头像 URL</label><input type="text" id="charAvatar" oninput="saveCurrentItem()"></div>
+                    
+                    <div class="form-group">
+                        <label>头像 (URL 或 本地上传)</label>
+                        <div class="image-input-group">
+                            <input type="text" id="charAvatar" oninput="saveCurrentItem()" placeholder="https://..." style="flex:1">
+                            <button class="btn btn-outline" onclick="triggerUpload('charAvatar')">📂</button>
+                            <img id="preview_charAvatar" class="image-preview-mini">
+                        </div>
+                    </div>
                     
                     <button class="btn btn-success btn-full btn-float-save" onclick="manualSave()">💾 保存并刷新预览</button>
                     <button class="btn btn-danger btn-full" onclick="deleteCurrentItem()">删除角色</button>
                 </div>
-                <div id="charEmpty" style="text-align:center; padding:50px; color:#666;">👈 请先从列表选择角色</div>
+                <div id="charEmpty" style="text-align:center; padding:50px; color:#666;">请从左侧列表选择角色</div>
             </div>
 
             <div id="formScene" class="editor-form" style="display:none;">
                 <div id="sceneEditorContainer">
                     <div class="form-group" style="display:flex; gap:10px;">
-                        <div style="flex:1"><label>ID (自动生成)</label><input type="text" id="sceneId" disabled style="opacity:0.6; color:#10b981; font-weight:bold;"></div>
+                        <div style="flex:1"><label>ID (自动生成)</label><input type="text" id="sceneId" disabled style="opacity:0.8; color:var(--success); font-weight:bold;"></div>
                         <div style="width:100px"><label>类型</label>
                             <select id="sceneType" onchange="saveCurrentItem()">
                                 <option value="fixed">固定</option>
@@ -266,9 +302,14 @@
                         <label>剧情文本 / AI Prompt</label>
                         <textarea id="sceneContent" style="height: 120px;" oninput="saveCurrentItem()"></textarea>
                     </div>
+                    
                     <div class="form-group">
-                        <label>背景图 URL</label>
-                        <input type="text" id="sceneBg" oninput="saveCurrentItem()">
+                        <label>背景图 (URL 或 本地上传)</label>
+                        <div class="image-input-group">
+                            <input type="text" id="sceneBg" oninput="saveCurrentItem()" placeholder="https://..." style="flex:1">
+                            <button class="btn btn-outline" onclick="triggerUpload('sceneBg')">📂</button>
+                            <img id="preview_sceneBg" class="image-preview-mini">
+                        </div>
                     </div>
                     
                     <div class="form-group">
@@ -282,13 +323,13 @@
                     <button class="btn btn-success btn-full btn-float-save" onclick="manualSave()">💾 保存并刷新预览</button>
                     <button class="btn btn-danger btn-full" onclick="deleteCurrentItem()">删除此节点</button>
                 </div>
-                <div id="sceneEmpty" style="text-align:center; padding:50px; color:#666;">👈 请先从列表选择剧情节点</div>
+                <div id="sceneEmpty" style="text-align:center; padding:50px; color:#666;">请从左侧列表选择剧情节点</div>
             </div>
         </div>
 
         <div class="preview-panel" id="panel-preview">
             <div class="phone-frame">
-                <div id="previewBg" class="phone-bg" style="background-image: url('https://images.unsplash.com/photo-1599707367072-cd6ad6cb3d2e?auto=format&fit=crop&w=600&q=80');"></div>
+                <div id="previewBg" class="phone-bg" style="background-image: url('');"></div>
                 <div class="phone-ui">
                     <div id="previewText" class="phone-text-box">
                         这里是预览区域。编辑左侧内容，这里会实时显示。
@@ -296,8 +337,8 @@
                     <div id="previewOptions" style="display:flex; flex-wrap:wrap;"></div>
                 </div>
                 <div id="previewOverlay" style="position:absolute; inset:0; background:rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center; flex-direction:column; text-align:center; padding:20px; display:none;">
-                    <div style="font-size:40px; margin-bottom:20px;">🌍</div>
-                    <div>正在编辑世界观<br>无需预览剧情</div>
+                    <div style="font-size:40px; margin-bottom:20px; color:var(--text-muted);">🌍</div>
+                    <div style="color:var(--text-muted);">正在编辑世界观<br>无需预览剧情</div>
                 </div>
             </div>
         </div>
@@ -305,28 +346,81 @@
 
     <div class="mobile-tab-bar">
         <div class="tab-item active" onclick="switchMobileTab('list', this)">
-            <div class="tab-icon">☰</div><span>列表</span>
+            <svg class="svg-icon" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+            <span>列表</span>
         </div>
         <div class="tab-item" onclick="switchMobileTab('edit', this)">
-            <div class="tab-icon">✎</div><span>编辑</span>
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            <span>编辑</span>
         </div>
         <div class="tab-item" onclick="switchMobileTab('preview', this)">
-            <div class="tab-icon">👁️</div><span>预览</span>
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <span>预览</span>
         </div>
         <div class="tab-item" onclick="exportJson()">
-            <div class="tab-icon">💾</div><span>导出</span>
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+            <span>导出</span>
         </div>
     </div>
 
-    <input type="file" id="importFile" style="display:none" onchange="importJson(this)">
-
     <script>
-        // === 核心数据 ===
         let fullData = { worldview: { name: "", description: "" }, characters: {}, main_story: {}, side_stories: {}, char_routes: {} };
         let currentSection = 'world';
         let currentItemId = null;
+        let currentUploadTargetId = null; // 记录当前正在给哪个输入框传图
 
         function init() { switchSection('world'); }
+
+        // === 图片上传核心逻辑 ===
+        function triggerUpload(inputId) {
+            currentUploadTargetId = inputId;
+            document.getElementById('globalImageInput').click();
+        }
+
+        // 监听文件选择
+        document.getElementById('globalImageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // 压缩图片逻辑 (限制最大宽度 500px，压缩质量 0.7)
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const img = new Image();
+                img.src = evt.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    const MAX_SIZE = 500;
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    if (width > height) {
+                        if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; }
+                    } else {
+                        if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; }
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // 得到 Base64
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                    
+                    // 回填到输入框
+                    if (currentUploadTargetId) {
+                        const inputEl = document.getElementById(currentUploadTargetId);
+                        inputEl.value = dataUrl;
+                        // 触发保存和预览
+                        saveCurrentItem();
+                    }
+                    // 清空 file input 以便下次能选同一张图
+                    e.target.value = '';
+                };
+            };
+            reader.readAsDataURL(file);
+        });
 
         // === 切换板块 ===
         function switchSection(section) {
@@ -334,13 +428,16 @@
             currentItemId = null;
 
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            // 更新标题
+            // 简单高亮逻辑：根据 section 索引 (pc-nav children)
+            const indexMap = { 'world':0, 'main':1, 'branch':2, 'chars':3 };
+            const navBtns = document.querySelectorAll('.pc-nav .nav-btn');
+            if(navBtns[indexMap[section]]) navBtns[indexMap[section]].classList.add('active');
+
             const titles = { 'world': '世界观', 'main': '主线剧情', 'branch': '普通支线', 'chars': '角色设定' };
             document.getElementById('sectionTitle').textContent = titles[section];
 
             document.querySelectorAll('.editor-form').forEach(el => el.style.display = 'none');
             
-            const isChar = (section === 'chars');
             if (section === 'world') {
                 document.getElementById('formWorld').style.display = 'block';
                 document.getElementById('worldName').value = fullData.worldview.name || "";
@@ -349,7 +446,7 @@
                 if(window.innerWidth <= 768) switchMobileTab('edit');
             } else {
                 renderSidebarList();
-                if (isChar) {
+                if (section === 'chars') {
                     document.getElementById('formChar').style.display = 'block';
                     document.getElementById('charEditorContainer').style.display = 'none';
                     document.getElementById('charEmpty').style.display = 'block';
@@ -377,22 +474,27 @@
             const listEl = document.getElementById('itemList');
             listEl.innerHTML = '';
             let dataMap = getDataMapBySection();
-            if (Object.keys(dataMap).length === 0) listEl.innerHTML = '<div style="padding:20px; text-align:center; color:#666; font-size:12px;">暂无条目，点击右上角新建</div>';
+            
+            if (Object.keys(dataMap).length === 0) {
+                listEl.innerHTML = '<div style="padding:20px; text-align:center; color:#666; font-size:12px;">暂无条目，点击右上角新建</div>';
+            }
 
-            // 排序：尝试把 ID 按数字排序
+            // 智能排序：提取数字部分排序
             const keys = Object.keys(dataMap).sort((a,b) => {
-                const numA = parseInt(a.replace(/[^0-9]/g, '')) || 0;
-                const numB = parseInt(b.replace(/[^0-9]/g, '')) || 0;
+                const numA = parseInt(a.match(/\d+$/)) || 0;
+                const numB = parseInt(b.match(/\d+$/)) || 0;
                 return numA - numB;
             });
 
             keys.forEach(key => {
                 const li = document.createElement('li');
                 li.className = `scene-item ${key === currentItemId ? 'active' : ''}`;
+                
                 let label = key;
                 if (currentSection === 'chars') label = dataMap[key].name || "未命名";
-                else if (dataMap[key].text) label = dataMap[key].text.substring(0, 15) + "...";
-                li.innerHTML = `<span>${label}</span> <span style="font-size:10px;opacity:0.5">${key}</span>`;
+                else if (dataMap[key].text) label = dataMap[key].text.substring(0, 12) + "...";
+                
+                li.innerHTML = `<span style="font-weight:500;">${label}</span> <span style="font-size:10px; opacity:0.5; font-family:monospace;">${key}</span>`;
                 li.onclick = () => loadItem(key);
                 listEl.appendChild(li);
             });
@@ -405,18 +507,17 @@
             return {};
         }
 
-        // === 新增：按顺序生成 ID ===
+        // === 智能 ID 生成 (修复：按顺序) ===
         function generateNextId(prefix) {
             const map = getDataMapBySection();
-            const existingIds = Object.keys(map).filter(k => k.startsWith(prefix));
-            if (existingIds.length === 0) return prefix + "_1";
+            const keys = Object.keys(map);
+            // 过滤出符合 prefix_数字 格式的 key
+            const nums = keys
+                .filter(k => k.startsWith(prefix + "_"))
+                .map(k => parseInt(k.replace(prefix + "_", "")))
+                .filter(n => !isNaN(n));
             
-            // 提取数字并找最大值
-            const nums = existingIds.map(id => {
-                const parts = id.split('_');
-                return parseInt(parts[parts.length-1]) || 0;
-            });
-            const max = Math.max(...nums);
+            const max = nums.length > 0 ? Math.max(...nums) : 0;
             return prefix + "_" + (max + 1);
         }
 
@@ -429,24 +530,35 @@
             if (currentSection === 'chars') {
                 document.getElementById('charEditorContainer').style.display = 'block';
                 document.getElementById('charEmpty').style.display = 'none';
+                
                 document.getElementById('charId').value = id;
                 document.getElementById('charName').value = data.name || "";
                 document.getElementById('charPersona').value = data.persona || "";
                 document.getElementById('charAvatar').value = data.avatar || "";
+                
+                // 迷你预览更新
+                const mini = document.getElementById('preview_charAvatar');
+                if(data.avatar) { mini.src=data.avatar; mini.style.display='block'; } else { mini.style.display='none'; }
+                
                 updatePreviewVisual(null);
             } else {
                 document.getElementById('sceneEditorContainer').style.display = 'block';
                 document.getElementById('sceneEmpty').style.display = 'none';
+                
                 document.getElementById('sceneId').value = id;
                 document.getElementById('sceneType').value = data.type || 'fixed';
                 document.getElementById('sceneContent').value = data.text || data.prompt || "";
                 document.getElementById('sceneBg').value = data.background || "";
+                
+                // 迷你预览更新
+                const mini = document.getElementById('preview_sceneBg');
+                if(data.background) { mini.src=data.background; mini.style.display='block'; } else { mini.style.display='none'; }
+                
                 renderOptionsForm(data.options || []);
                 updatePreviewVisual(data);
             }
         }
 
-        // === 修复：背景图实时预览 ===
         function updatePreviewVisual(data) {
             const overlay = document.getElementById('previewOverlay');
             const bg = document.getElementById('previewBg');
@@ -456,11 +568,11 @@
             if (!data) { overlay.style.display = 'flex'; return; }
             overlay.style.display = 'none';
 
-            // 修复背景图逻辑：只要有值就尝试显示
             if (data.background && data.background.trim() !== "") {
                 bg.style.backgroundImage = `url('${data.background}')`;
             } else {
-                bg.style.backgroundImage = 'none'; // 或者设置默认图
+                bg.style.backgroundImage = 'none';
+                bg.style.backgroundColor = '#111';
             }
             
             text.textContent = data.text || data.prompt || "(空文本)";
@@ -477,15 +589,12 @@
             }
         }
 
-        // === 核心功能 ===
         function addItem() {
-            // 使用新逻辑生成 ID
             let prefix = currentSection === 'chars' ? "char" : currentSection;
             let newId = generateNextId(prefix);
-            
             let newObj = currentSection === 'chars' 
                 ? { name: "新角色", persona: "" } 
-                : { type: "fixed", text: "新剧情片段...", options: [] };
+                : { type: "fixed", text: "新剧情...", options: [] };
 
             getDataMapBySection()[newId] = newObj;
             loadItem(newId);
@@ -505,31 +614,42 @@
                 item.name = document.getElementById('charName').value;
                 item.persona = document.getElementById('charPersona').value;
                 item.avatar = document.getElementById('charAvatar').value;
+                
+                // 迷你预览同步
+                const mini = document.getElementById('preview_charAvatar');
+                if(item.avatar) { mini.src=item.avatar; mini.style.display='block'; } else { mini.style.display='none'; }
+                
                 renderSidebarList();
             } else {
                 item.type = document.getElementById('sceneType').value;
                 const content = document.getElementById('sceneContent').value;
                 if (item.type === 'ai') { item.prompt = content; delete item.text; }
                 else { item.text = content; delete item.prompt; }
-                
-                // 确保背景图实时保存
                 item.background = document.getElementById('sceneBg').value;
+                
+                // 迷你预览同步
+                const mini = document.getElementById('preview_sceneBg');
+                if(item.background) { mini.src=item.background; mini.style.display='block'; } else { mini.style.display='none'; }
                 
                 updatePreviewVisual(item);
             }
         }
         
-        // 手动保存并刷新
         function manualSave() {
             if(currentSection === 'world') saveWorld();
             else saveCurrentItem();
             
-            alert('✅ 保存成功！预览已刷新');
+            // 强制刷新一次预览
+            if (currentItemId && currentSection !== 'world') {
+               updatePreviewVisual(getDataMapBySection()[currentItemId]);
+            }
+            
+            alert('✅ 保存成功！');
             if(window.innerWidth <= 768) switchMobileTab('preview');
         }
 
         function deleteCurrentItem() {
-            if(confirm('确定删除吗？')) {
+            if(confirm('删除后无法恢复，确定吗？')) {
                 delete getDataMapBySection()[currentItemId];
                 currentItemId = null;
                 document.getElementById('sceneEditorContainer').style.display = 'none';
@@ -548,6 +668,7 @@
             const allIds = [];
             if(fullData.main_story) allIds.push(...Object.keys(fullData.main_story));
             if(fullData.side_stories) allIds.push(...Object.keys(fullData.side_stories));
+            if(fullData.char_routes) allIds.push(...Object.keys(fullData.char_routes));
 
             opts.forEach((opt, idx) => {
                 const div = document.createElement('div');
@@ -605,7 +726,7 @@
             reader.onload = e => {
                 try {
                     fullData = JSON.parse(e.target.result);
-                    ['worldview','characters','main_story','side_stories'].forEach(k => { if(!fullData[k]) fullData[k] = {}; });
+                    ['worldview','characters','main_story','side_stories','char_routes'].forEach(k => { if(!fullData[k]) fullData[k] = {}; });
                     switchSection('world');
                     alert('导入成功！');
                 } catch(err) { alert('文件格式错误'); }
