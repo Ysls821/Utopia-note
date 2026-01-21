@@ -541,40 +541,6 @@
             color: var(--text-muted); 
         }
 
-        /* 个人设定页（Dock 第四项） */
-        <div class="persona-container">
-                <!-- 修复：顶部头像条 -->
-                <div class="glass-panel" style="border-radius: 20px; padding: 12px 16px; margin-bottom: 20px;">
-                    <div class="persona-strip" id="persona-strip" style="display:flex; gap:10px; overflow-x:auto; min-height:80px;"></div>
-                </div>
-
-                <!-- 当前设定表单 -->
-                <div class="glass-panel persona-form" style="margin-top: 16px;">
-                    <div class="persona-row">
-                        <span class="persona-label">姓名</span>
-                        <input id="persona-name" class="input-modern" placeholder="角色名">
-                    </div>
-                    <div class="persona-row">
-                        <span class="persona-label">设定</span>
-                        <textarea id="persona-desc" class="persona-textarea" placeholder="人物小传..."></textarea>
-                    </div>
-                    <div class="persona-row">
-                        <span class="persona-label">头像</span>
-                        <div style="display:flex; align-items:center; gap:16px;">
-                            <div class="persona-avatar-slot" id="persona-avatar-slot" onclick="triggerAvatarUpload()">
-                                <img id="persona-avatar-preview" style="display:none; width:100%; height:100%; object-fit:cover;">
-                                <span id="persona-placeholder">点击上传</span>
-                            </div>
-                            <span style="font-size:12px; color:var(--text-muted);">仅本地保存</span>
-                        </div>
-                        <input type="file" id="persona-avatar-input" accept="image/*" style="display:none;" onchange="onAvatarFileChange(event)">
-                    </div>
-                    <div class="persona-actions">
-                        <button class="btn-glow" style="flex:1;" onclick="savePersona()">保存设定</button>
-                    </div>
-                </div>
-            </div>       
-
         /* 系统设置 */
         .settings-container {
             max-width: 600px;
@@ -768,7 +734,6 @@
     <div class="aurora-bg"></div>
     <div id="toast">✅ 操作成功</div>
     
-    <!-- 登录页面 -->
     <div class="login-page" id="loginPage">
         <div class="login-card glass-panel">
             <h1 class="login-title">INFINITE LOVE</h1>
@@ -787,9 +752,7 @@
         </div>
     </div>
 
-    <!-- 主界面 -->
     <div class="main-hub" id="mainHub">
-        <!-- 顶部信息栏 -->
         <div class="top-bar">
             <div class="user-pill glass-panel">
                 <div class="avatar-small">
@@ -810,11 +773,9 @@
             </div>
         </div>
 
-        <!-- 1. 副本中心视图 -->
         <div class="view-section active" id="view-hub">
             <h2 class="section-header">探索世界</h2>
             <div class="grid-layout">
-                <!-- 可玩副本 -->
                 <div class="card-instance glass-panel" onclick="showInstanceDetail()">
                     <div class="card-cover">
                         <img src="https://images.unsplash.com/photo-1599707367072-cd6ad6cb3d2e?auto=format&fit=crop&w=600&q=80" alt="紫禁城">
@@ -826,7 +787,6 @@
                     </div>
                 </div>
 
-                <!-- 锁定副本 -->
                 <div class="card-instance glass-panel locked">
                     <div class="card-cover">
                         <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:60px;">🔒</div>
@@ -844,14 +804,12 @@
             </div>
         </div>
 
-        <!-- 2. 副本详情视图 -->
         <div class="view-section" id="view-detail">
             <button class="glass-panel" onclick="switchView('hub')" style="margin-bottom: 20px; padding: 10px 20px; border-radius: 12px; border:none; color:white; cursor:pointer; display:flex; align-items:center; gap:8px;">
                 <svg class="icon" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                 返回
             </button>
 
-            <!-- 左图右文头图区域 -->
             <div class="detail-layout glass-panel">
                 <div class="detail-cover">
                     <img src="https://images.unsplash.com/photo-1599707367072-cd6ad6cb3d2e?auto=format&fit=crop&w=1200&q=80" alt="紫禁城迷梦封面">
@@ -891,21 +849,18 @@
             <div class="glass-panel" style="padding: 24px; border-radius: 24px; margin-bottom: 30px;">
                 <h3 style="margin-bottom: 16px; font-weight: 700;">主要角色</h3>
                 <div class="char-scroll">
-                    <!-- 角色 1 -->
                     <div class="char-item">
                         <div class="char-avatar">
                             <div style="font-size: 40px; display:flex; align-items:center; justify-content:center; height:100%;">👑</div>
                         </div>
                         <div class="char-name">夜幽皇子</div>
                     </div>
-                    <!-- 角色 2 -->
                     <div class="char-item">
                         <div class="char-avatar">
                             <div style="font-size: 40px; display:flex; align-items:center; justify-content:center; height:100%;">🗡️</div>
                         </div>
                         <div class="char-name">侍卫云墨</div>
                     </div>
-                    <!-- 角色 3 -->
                     <div class="char-item">
                         <div class="char-avatar">
                             <div style="font-size: 40px; display:flex; align-items:center; justify-content:center; height:100%;">🎭</div>
@@ -916,7 +871,6 @@
 
             </div>
 
-            <!-- 剧情分享区 -->
             <div class="glass-panel" style="padding: 24px; border-radius: 24px;">
                 <h3 style="margin-bottom: 16px; font-weight: 700;">✨ 优秀剧情分享</h3>
                 <div style="background: rgba(0,0,0,0.3); padding: 16px; border-radius: 12px; margin-bottom: 12px; border-left: 3px solid var(--primary);">
@@ -934,21 +888,17 @@
             </div>
         </div>
 
-        <!-- 3. 记忆回廊视图 -->
         <div class="view-section" id="view-gallery">
             <h2 class="section-header">记忆回廊</h2>
             <div class="settings-container glass-panel setting-group">
-                <p style="color: var(--text-muted); line-height: 1.8;">
-<div style="padding:20px;">
-                <h2 class="section-header">记忆回廊</h2>
-                <div class="glass-panel" style="padding:20px; border-radius:20px;">
+                <div style="padding:10px;">
                     <p style="color:var(--text-muted); font-size:12px; margin-bottom:10px;">记录所有经历过的剧情片段</p>
                     <div id="storyLog" class="log-container">暂无记忆</div>
                     <button class="btn-glow" onclick="clearMemory()" style="margin-top:15px; background:rgba(239,68,68,0.5);">🗑️ 清空记忆</button>
                 </div>
             </div>
+        </div>
 
-        <!-- 4. 道具商店视图 -->
         <div class="view-section" id="view-shop">
             <h2 class="section-header">道具商店</h2>
             <div class="settings-container glass-panel setting-group">
@@ -958,45 +908,43 @@
             </div>
         </div>
 
-        <!-- 5. 我的设定视图 -->
-        <div class="persona-container">
-                <!-- 修复：头像条容器 -->
+        <div class="view-section" id="view-persona">
+            <h2 class="section-header">我的设定</h2>
+            <div class="persona-container">
                 <div class="glass-panel" style="border-radius: 20px; padding: 12px 16px; margin-bottom: 20px;">
                     <div class="persona-strip" id="persona-strip" style="display:flex; gap:15px; overflow-x:auto; min-height:80px; padding:5px;"></div>
                 </div>
 
-                <!-- 编辑表单 -->
-                <div class="glass-panel persona-form" style="margin-top: 16px;">
-                    <div class="persona-row">
-                        <span class="persona-label">姓名</span>
+                <div class="glass-panel persona-form" style="margin-top: 16px; padding: 20px;">
+                    <div class="input-wrapper">
+                        <label class="input-label">姓名</label>
                         <input id="persona-name" class="input-modern" placeholder="角色名">
                     </div>
-                    <div class="persona-row">
-                        <span class="persona-label">设定</span>
-                        <textarea id="persona-desc" class="persona-textarea" placeholder="人物小传..."></textarea>
+                    <div class="input-wrapper">
+                        <label class="input-label">设定</label>
+                        <textarea id="persona-desc" class="input-modern" style="min-height: 100px;" placeholder="人物小传..."></textarea>
                     </div>
-                    <div class="persona-row">
-                        <span class="persona-label">头像</span>
+                    <div class="input-wrapper">
+                        <label class="input-label">头像</label>
                         <div style="display:flex; align-items:center; gap:16px;">
-                            <div class="persona-avatar-slot" id="persona-avatar-slot" onclick="triggerAvatarUpload()">
+                            <div class="persona-avatar-slot" id="persona-avatar-slot" onclick="triggerAvatarUpload()" style="width: 60px; height: 60px; background: rgba(255,255,255,0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden;">
                                 <img id="persona-avatar-preview" style="display:none; width:100%; height:100%; object-fit:cover;">
-                                <span id="persona-placeholder">点击上传</span>
+                                <span id="persona-placeholder" style="font-size: 10px;">点击上传</span>
                             </div>
                             <span style="font-size:12px; color:var(--text-muted);">仅本地保存</span>
                         </div>
                         <input type="file" id="persona-avatar-input" accept="image/*" style="display:none;" onchange="onAvatarFileChange(event)">
                     </div>
-                    <div class="persona-actions">
+                    <div class="persona-actions" style="margin-top: 20px;">
                         <button class="btn-glow" style="flex:1;" onclick="savePersona()">保存设定</button>
                     </div>
                 </div>
             </div>
+        </div>
         
-        <!-- 6. 系统设置视图 -->
         <div class="view-section" id="view-settings">
             <h2 class="section-header">系统设置</h2>
             
-            <!-- API 配置 -->
             <div class="settings-container glass-panel setting-group">
                 <h3 style="margin-bottom: 20px; font-size: 18px;">API 连接配置</h3>
                 
@@ -1033,7 +981,6 @@
                 <div id="apiTestResult" style="margin-top: 12px; padding: 12px; border-radius: 8px; font-size: 13px; display: none;"></div>
             </div>
 
-            <!-- 剧本管理 (新增) -->
             <div class="settings-container glass-panel setting-group" style="margin-top: 24px;">
                 <h3 style="margin-bottom: 20px; font-size: 18px;">剧本管理</h3>
                 <div style="color: var(--text-muted); font-size: 13px; margin-bottom: 12px;">
@@ -1052,7 +999,6 @@
                 <div id="storyUploadMsg" style="margin-top:8px; font-size:12px; color:#10b981;"></div>
             </div>
 
-            <!-- 主题设置 -->
             <div class="settings-container glass-panel setting-group" style="margin-top: 24px;">
                 <h3 style="margin-bottom: 20px; font-size: 18px;">主题风格</h3>
                 <div class="theme-grid">
@@ -1065,7 +1011,6 @@
             </div>
         </div>
 
-        <!-- 底部 Dock 导航 -->
         <div class="dock-nav glass-panel">
             <div class="dock-item active" onclick="switchView('hub')" title="副本中心">
                 <svg class="icon dock-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
@@ -1085,7 +1030,6 @@
         </div>
     </div>
 
-    <!-- 游戏界面 -->
     <div id="gameContainer" class="game-container">
         <div id="gameBg" class="game-bg"></div>
         <button class="game-exit-btn" onclick="saveProgress(true)" style="right: 80px; background: rgba(16, 185, 129, 0.6);"> 存档</button>       
@@ -1665,6 +1609,65 @@
                 });
             }
         }
+        
+        // 补充缺失的 Persona 函数，防止报错
+        function renderPersonaStrip() {
+             const strip = document.getElementById('persona-strip');
+             if(!strip) return;
+             strip.innerHTML = '';
+             const list = loadPersonas();
+             if(list.length === 0) {
+                 strip.innerHTML = '<span style="color:var(--text-muted); font-size:12px; padding:10px;">暂无设定</span>';
+                 return;
+             }
+             list.forEach((p, idx) => {
+                 const d = document.createElement('div');
+                 d.className = 'char-item';
+                 d.innerHTML = `
+                   <div class="char-avatar" onclick="loadPersonaDetail(${idx})">
+                      ${p.avatar ? `<img src="${p.avatar}">` : '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:24px;">👤</div>'}
+                   </div>
+                   <div class="char-name">${p.name || '未命名'}</div>
+                 `;
+                 strip.appendChild(d);
+             });
+        }
+        
+        function savePersona() {
+            const name = document.getElementById('persona-name').value;
+            const desc = document.getElementById('persona-desc').value;
+            const imgEl = document.getElementById('persona-avatar-preview');
+            const avatar = imgEl.src !== '' && imgEl.style.display !== 'none' ? imgEl.src : '';
+            
+            const newP = { name, desc, avatar, id: Date.now() };
+            const list = loadPersonas();
+            list.push(newP);
+            savePersonas(list);
+            
+            renderPersonaStrip();
+            document.getElementById('toast').style.display = 'block';
+            setTimeout(() => document.getElementById('toast').style.display = 'none', 2000);
+        }
+        
+        function onAvatarFileChange(e) {
+             const file = e.target.files[0];
+             if(!file) return;
+             const reader = new FileReader();
+             reader.onload = function(evt) {
+                 const img = document.getElementById('persona-avatar-preview');
+                 img.src = evt.target.result;
+                 img.style.display = 'block';
+                 document.getElementById('persona-placeholder').style.display = 'none';
+             };
+             reader.readAsDataURL(file);
+        }
+        
+        function clearMemory() {
+             if(confirm("确定要清空所有记忆吗？")) {
+                 activeStoryData.memory = "";
+                 document.getElementById('storyLog').textContent = "暂无记忆";
+             }
+        }
 
         // ===== 剧本管理：从 localStorage 读取 / 写入 =====
         // 核心修改：适配编辑器导出的多层级结构
@@ -1816,8 +1819,6 @@ ${memory}
         }
 
         // 其他辅助函数
-        function changeTheme(theme) { document.body.setAttribute('data-theme', theme); localStorage.setItem('theme', theme); }
-        function loadTheme() { changeTheme(localStorage.getItem('theme') || 'purple'); }
         function triggerAvatarUpload() { document.getElementById('persona-avatar-input').click(); }
         
         // 启动
