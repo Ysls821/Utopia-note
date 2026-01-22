@@ -230,16 +230,114 @@
         .story-upload-area { margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
         .file-btn { display: inline-block; padding: 10px 20px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; cursor: pointer; color: var(--text-muted); font-size: 13px; }
 
-        /* 响应式 */
+        /* === 📱 移动端深度适配 (v4.5 修复版) === */
         @media (max-width: 768px) {
-            .detail-layout { flex-direction: column; }
-            .detail-cover { flex-basis: auto; height: 220px; }
-            .dock-nav { width: 90%; justify-content: space-between; padding: 12px 20px; }
-            .grid-layout { grid-template-columns: 1fr; }
-            .game-content { padding: 16px 10px 24px; }
-            .game-text-box { font-size: 14px; padding: 14px 14px; }
-        }
+            /* 1. 首页：调整卡片尺寸 (双列布局) */
+            .grid-layout { 
+                grid-template-columns: 1fr 1fr; 
+                gap: 12px;
+            }
+            .card-cover { 
+                height: 140px; 
+                background: #222;
+            }
+            .card-title { font-size: 15px; margin-bottom: 4px; }
+            .card-desc { font-size: 11px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+            .card-badge { top: 8px; left: 8px; padding: 2px 8px; font-size: 10px; }
 
+            /* 2. 副本详情页：重构为左图右文 */
+            .detail-layout {
+                flex-direction: row; /* 强制横向 */
+                flex-wrap: wrap;
+                padding: 16px;
+                gap: 16px;
+                align-items: flex-start;
+                background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+            }
+
+            /* 左侧封面图 (固定小尺寸) */
+            .detail-cover {
+                flex: 0 0 100px;
+                height: 140px;
+                width: 100px;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                margin-bottom: 0; /* 修正可能存在的边距 */
+            }
+
+            /* 右侧信息区 */
+            .detail-info {
+                flex: 1;
+                min-width: 0;
+                gap: 6px;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .detail-title { 
+                font-size: 18px; 
+                line-height: 1.2;
+                margin-bottom: 2px; 
+            }
+            
+            .detail-meta { 
+                font-size: 11px; 
+                opacity: 0.8;
+            }
+
+            .tag-row { margin-top: 4px; gap: 6px; }
+            .tag { padding: 2px 6px; font-size: 10px; background: rgba(255,255,255,0.1); }
+
+            .detail-desc {
+                font-size: 12px;
+                line-height: 1.4;
+                color: var(--text-muted);
+                margin-top: 6px;
+                display: -webkit-box;
+                -webkit-line-clamp: 4;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            /* 按钮区域：强制换行并填满 */
+            .detail-info > div:last-child {
+                margin-top: 12px;
+                width: calc(100% + 116px); /* 延伸宽度 */
+                margin-left: -116px;       /* 向左拉回 */
+                display: flex;
+                gap: 10px;
+            }
+
+            .detail-info .btn-glow {
+                padding: 0;
+                font-size: 13px;
+                border-radius: 10px;
+                height: 40px;
+            }
+
+            /* 无尽模式按钮 */
+            .detail-info + button.btn-glow {
+                margin-top: 0;
+                font-size: 12px;
+                padding: 0;
+                height: 36px;
+                opacity: 0.8;
+            }
+
+            /* 底部导航 Dock */
+            .dock-nav { 
+                width: 94%; 
+                padding: 10px 16px; 
+                justify-content: space-between;
+                bottom: 16px;
+            }
+            
+            /* 游戏界面 */
+            .game-content { padding: 16px; }
+            .game-text-box { font-size: 15px; padding: 16px; min-height: 100px; }
+            .game-exit-btn { top: 12px; right: 12px; padding: 6px 12px; font-size: 12px; }
+        }
+        
         /* 弹窗样式 */
         .modal-overlay { position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; animation: fadeIn 0.2s; }
         .modal-card { width: 90%; max-width: 400px; padding: 24px; border-radius: 24px; background: var(--bg-deep); border: 1px solid var(--primary); }
@@ -523,7 +621,7 @@
                 <h3 style="margin-bottom: 20px; font-size: 18px;">剧本管理</h3>
                 <div style="display:flex; gap:10px; align-items:center;">
                     <label class="file-btn">
-                        📂 上传剧本文件
+                         上传剧本文件
                         <input type="file" id="storyFileUpload" accept=".json" style="display:none;" onchange="handleStoryUpload(event)">
                     </label>
                     <button class="btn-glow" style="background: rgba(239, 68, 68, 0.5); width: auto;" onclick="resetStory()">恢复默认</button>
