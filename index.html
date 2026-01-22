@@ -455,7 +455,7 @@
             </div>
         </div>
 
-        <div class="view-section" id="view-persona">
+<div class="view-section" id="view-persona">
             <h2 class="section-header">我的设定</h2>
             <div class="persona-container">
                 <div class="glass-panel" style="border-radius: 20px; padding: 12px 16px; margin-bottom: 20px;">
@@ -487,23 +487,21 @@
                     </div>
                 </div>
             </div>
-            
-        </div> <div class="view-section" id="view-settings">
+        </div> 
+        
+<div class="view-section" id="view-settings">
             <h2 class="section-header">系统设置</h2>
             
             <div class="settings-container glass-panel setting-group">
                 <h3 style="margin-bottom: 20px; font-size: 18px;">API 连接配置</h3>
-                
                 <div class="input-wrapper">
                     <label class="input-label">配置名称</label>
                     <input type="text" class="input-modern" id="apiName" placeholder="例如：我的 OpenAI 配置">
                 </div>
-                
                 <div class="input-wrapper">
                     <label class="input-label">API URL 代理地址</label>
                     <input type="text" class="input-modern" id="apiUrl" placeholder="例如：https://api.openai.com/v1">
                 </div>
-                
                 <div class="input-wrapper">
                     <label class="input-label">API 密钥 (Key)</label>
                     <input type="password" class="input-modern" id="settingsApiKey" placeholder="sk-...">
@@ -514,33 +512,21 @@
                         <option value="">-- 请先测试连接获取模型列表 --</option>
                     </select>
                 </div>
-
                 <div style="display: flex; gap: 12px;">
-                    <button class="btn-glow" style="flex: 1;" onclick="testApiConnection()">
-                        测试连接
-                    </button>
-                    <button class="btn-glow" style="flex: 1;" onclick="saveApiConfig()">
-                        保存配置
-                    </button>
+                    <button class="btn-glow" style="flex: 1;" onclick="testApiConnection()">测试连接</button>
+                    <button class="btn-glow" style="flex: 1;" onclick="saveApiConfig()">保存配置</button>
                 </div>
-                
                 <div id="apiTestResult" style="margin-top: 12px; padding: 12px; border-radius: 8px; font-size: 13px; display: none;"></div>
             </div>
 
             <div class="settings-container glass-panel setting-group" style="margin-top: 24px;">
                 <h3 style="margin-bottom: 20px; font-size: 18px;">剧本管理</h3>
-                <div style="color: var(--text-muted); font-size: 13px; margin-bottom: 12px;">
-                    上传编辑器导出的 JSON 文件来替换默认剧情。
-                </div>
-                
                 <div style="display:flex; gap:10px; align-items:center;">
                     <label class="file-btn">
-                         上传剧本文件
+                        📂 上传剧本文件
                         <input type="file" id="storyFileUpload" accept=".json" style="display:none;" onchange="handleStoryUpload(event)">
                     </label>
-                    <button class="btn-glow" style="background: rgba(239, 68, 68, 0.5); width: auto;" onclick="resetStory()">
-                         恢复默认
-                    </button>
+                    <button class="btn-glow" style="background: rgba(239, 68, 68, 0.5); width: auto;" onclick="resetStory()">恢复默认</button>
                 </div>
                 <div id="storyUploadMsg" style="margin-top:8px; font-size:12px; color:#10b981;"></div>
             </div>
@@ -550,10 +536,10 @@
                 <div class="theme-grid">
                     <button class="theme-btn active" data-theme="purple" onclick="changeTheme('purple')">霓虹紫</button>
                     <button class="theme-btn" data-theme="reader" onclick="changeTheme('reader')" style="background:#fdfbf7; color:#263238; border:1px solid #b0bec5;">纸间黛蓝</button>
-                    <button class="theme-btn" data-theme="black" onclick="changeTheme('black')"> 黑色</button>
-                    <button class="theme-btn" data-theme="white" onclick="changeTheme('white')"> 白色</button>
-                    <button class="theme-btn" data-theme="green" onclick="changeTheme('green')"> 绿色</button>
-                    <button class="theme-btn" data-theme="blue" onclick="changeTheme('blue')"> 蓝色</button>
+                    <button class="theme-btn" data-theme="black" onclick="changeTheme('black')">黑色</button>
+                    <button class="theme-btn" data-theme="white" onclick="changeTheme('white')">白色</button>
+                    <button class="theme-btn" data-theme="green" onclick="changeTheme('green')">绿色</button>
+                    <button class="theme-btn" data-theme="blue" onclick="changeTheme('blue')">蓝色</button>
                 </div>
             </div>
 
@@ -568,7 +554,7 @@
                 </div>
             </div>
         </div>
-    
+
         <div class="dock-nav glass-panel">
             <div class="dock-item active" onclick="switchView('hub')" title="副本中心">
                 <svg class="icon dock-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
@@ -584,10 +570,12 @@
             </div>
             <div class="dock-item" onclick="switchView('settings')" title="系统设置">
                 <svg class="icon dock-icon" viewBox="0 0 24 24">
-                    <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
-                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                 </svg>
-            </div>  
+            </div>
+        </div>
+    </div> ```
             
         <div id="gameContainer" class="game-container">
         <div id="gameBg" class="game-bg"></div>
