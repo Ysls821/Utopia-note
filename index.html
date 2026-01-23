@@ -4,32 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Utopia note·乌托邦手记</title>
-    <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script>
-    tailwind.config = {
-        darkMode: "class",
-        theme: {
-            extend: {
-                colors: {
-                    "primary": "#8c2bee",
-                    "primary-dark": "#6b1cb8",
-                    "cyan-accent": "#00f0ff",
-                    "background-dark": "#050507", 
-                    "surface-dark": "#120f16",
-                    "surface-lighter": "#1e1a24"
-                },
-                fontFamily: {
-                    "display": ["Spline Sans", "sans-serif"]
-                },
-                boxShadow: {
-                    'neon': '0 0 20px rgba(140, 43, 238, 0.5)',
-                }
-            },
-        },
-    }
-</script>
     <style>
         :root {
             /* === 你的原始配色系统 (保持不变) === */
@@ -457,146 +431,56 @@
             </div>
         </div>
 
-       <!-- 新版副本详情页 -->
-        <div id="view-detail" class="view-section hidden bg-background-dark text-white font-display antialiased overflow-x-hidden relative min-h-screen flex flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#1a0b2e] via-background-dark to-background-dark">
-            
-            <!-- 返回导航 -->
-            <header class="sticky top-0 z-50 w-full glass-panel border-b border-white/5">
-                <div class="flex items-center justify-between px-6 py-4 max-w-[1400px] mx-auto">
-                    <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('hub')">
-                        <span class="material-symbols-outlined text-[24px] text-slate-400 hover:text-white transition-colors">arrow_back</span>
-                        <span class="text-white font-medium hover:text-cyan-accent transition-colors">Back to Hub</span>
-                    </div>
-                </div>
-            </header>
+        <div class="view-section" id="view-detail">
+            <button class="glass-panel" onclick="switchView('hub')" style="margin-bottom: 20px; padding: 10px 20px; border-radius: 12px; border:none; color:var(--text-main); cursor:pointer; display:flex; align-items:center; gap:8px;">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                返回
+            </button>
 
-            <main class="flex-grow w-full max-w-[1400px] mx-auto px-6 lg:px-10 py-8 lg:py-12">
-                <!-- 面包屑 -->
-                <div class="flex items-center gap-2 mb-8 text-sm opacity-60">
-                    <span class="text-cyan-accent">Hub</span>
-                    <span class="material-symbols-outlined text-[16px]">chevron_right</span>
-                    <span class="text-white font-medium">紫禁城迷梦</span>
+            <div class="detail-layout glass-panel">
+                <div class="detail-cover">
+                    <img src="https://images.unsplash.com/photo-1599707367072-cd6ad6cb3d2e?auto=format&fit=crop&w=1200&q=80" alt="紫禁城迷梦封面">
                 </div>
-
-                <!-- 核心内容区 -->
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 xl:gap-20 mb-20">
-                    <!-- 左侧海报 -->
-                    <div class="lg:col-span-5 flex flex-col">
-                        <div class="relative w-full aspect-[2/3] rounded-2xl overflow-hidden shadow-neon border border-primary/30 group">
-                            <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" style='background-image: url("https://images.unsplash.com/photo-1599707367072-cd6ad6cb3d2e?w=800");'></div>
-                            <div class="absolute inset-0 bg-gradient-to-t from-background-dark via-transparent to-transparent opacity-80"></div>
-                            <div class="absolute top-6 left-6">
-                                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10">
-                                    <span class="flex h-2 w-2 relative">
-                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-accent opacity-75"></span>
-                                        <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-accent"></span>
-                                    </span>
-                                    <span class="text-xs font-bold uppercase tracking-wider text-white">Hot</span>
-                                </div>
+                <div class="detail-info">
+                    <div>
+                        <div class="detail-title" style="display:flex; align-items:center; gap:12px;">
+                            紫禁城迷梦
+                            <div onclick="openPersonaModal()" style="font-size:14px; padding:4px 10px; background:rgba(255,255,255,0.1); border-radius:20px; cursor:pointer; border:1px solid rgba(255,255,255,0.2); display:flex; align-items:center; gap:4px;">
+                                <span id="currentPersonaLabel">未选人设</span>
+                                <svg class="icon" style="width:14px;height:14px;" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                        </div>
+                        <div class="detail-meta">
+                            作者：主神空间<br>
+                            标签：
+                            <div class="tag-row">
+                                <span class="tag">古代宫廷</span>
+                                <span class="tag">权谋</span>
+                                <span class="tag">恋爱</span>
+                            </div>
+                            <div class="detail-desc">
+                                穿越到明朝永乐年间，你成为了一名入宫的秀女。在这个金碧辉煌却暗流涌动的紫禁城中，每一步都可能是生死考验。
                             </div>
                         </div>
                     </div>
-
-                    <!-- 右侧详情与操作 -->
-                    <div class="lg:col-span-7 flex flex-col justify-center h-full">
-                        <div class="mb-6">
-                            <h1 class="text-5xl lg:text-7xl font-bold text-white leading-tight tracking-tight mb-4 text-glow font-display">
-                                紫禁城<br/>
-                                <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-accent via-white to-primary">迷梦</span>
-                            </h1>
-                            
-                            <div class="flex flex-wrap items-center gap-6 mb-6">
-                                <div class="flex items-center gap-2">
-                                    <span class="px-3 py-1 rounded-full bg-surface-lighter text-slate-300 border border-white/5 text-xs font-medium">古代宫廷</span>
-                                    <span class="px-3 py-1 rounded-full bg-surface-lighter text-slate-300 border border-white/5 text-xs font-medium">权谋</span>
-                                    <span class="px-3 py-1 rounded-full bg-surface-lighter text-slate-300 border border-white/5 text-xs font-medium">恋爱</span>
-                                </div>
-                            </div>
-
-                            <p class="text-lg text-slate-300 leading-relaxed font-light mb-8 max-w-2xl border-l-2 border-primary/50 pl-6">
-                                穿越到明朝永乐年间，你成为了一名入宫的秀女。在这座深宫中，每一个选择都关乎生死与爱恨。冷酷的皇子、温柔的侍卫、神秘的术士，谁才是你的归宿？
-                            </p>
-                        </div>
-
-                        <!-- 核心按钮组：对接原有逻辑 -->
-                        <div class="flex flex-wrap items-center gap-4 mb-12">
-                            <!-- 开始新游戏 -->
-                            <button onclick="startGame('start')" class="px-8 py-4 bg-gradient-to-r from-primary to-primary-dark hover:from-primary-dark hover:to-primary text-white font-bold text-lg rounded-xl shadow-[0_0_20px_rgba(140,43,238,0.4)] transition-all hover:scale-105 hover:shadow-neon flex items-center gap-2 group">
-                                <span class="material-symbols-outlined group-hover:animate-pulse">play_circle</span>
+                    <div>
+                        <div style="display:flex; gap:10px;">
+                            <button class="btn-glow" style="flex:1" onclick="startGame('start')">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 1-4 4v14a3 3 0 0 1 3-3h7z"></path></svg> 
                                 开始剧情
                             </button>
-                            
-                            <!-- 继续游戏 -->
-                            <button onclick="startGame('continue')" class="px-8 py-4 bg-transparent border border-white/20 hover:border-cyan-accent text-white font-medium text-lg rounded-xl transition-all hover:bg-cyan-accent/10 flex items-center gap-2">
-                                <span class="material-symbols-outlined">resume</span>
-                                继续进度
-                            </button>
-
-                            <div class="w-px h-12 bg-white/10 mx-2 hidden sm:block"></div>
-
-                            <!-- 无尽模式 -->
-                            <button onclick="startGame('endless')" class="px-6 py-4 bg-surface-lighter border border-white/10 hover:border-white/40 text-slate-300 hover:text-white font-medium text-base rounded-xl transition-all flex items-center gap-3">
-                                <span class="material-symbols-outlined text-cyan-accent">all_inclusive</span>
-                                <span>无尽模式</span>
+                            <button class="btn-glow" style="flex:1; background: rgba(16, 185, 129, 0.2);" onclick="startGame('continue')">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                                继续剧情
                             </button>
                         </div>
-
-                        <!-- 角色列表 (静态展示，如需动态可改JS) -->
-                        <div class="w-full">
-                            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-5 flex items-center gap-2">
-                                <span class="w-8 h-px bg-slate-700"></span>
-                                主要角色
-                                <span class="w-full h-px bg-slate-700/50"></span>
-                            </h3>
-                            <div class="flex flex-wrap gap-6 items-center">
-                                <!-- 角色1 -->
-                                <div class="flex flex-col items-center gap-3 group cursor-pointer">
-                                    <div class="size-16 rounded-full p-0.5 bg-gradient-to-b from-cyan-accent to-transparent group-hover:from-cyan-accent group-hover:to-primary transition-all">
-                                        <div class="size-full rounded-full bg-cover bg-center border-2 border-background-dark bg-gray-800 flex items-center justify-center text-2xl">👑</div>
-                                    </div>
-                                    <span class="text-sm font-medium text-slate-400 group-hover:text-white transition-colors">夜幽皇子</span>
-                                </div>
-                                <!-- 角色2 -->
-                                <div class="flex flex-col items-center gap-3 group cursor-pointer">
-                                    <div class="size-16 rounded-full p-0.5 bg-gradient-to-b from-primary to-transparent group-hover:from-primary group-hover:to-pink-500 transition-all">
-                                        <div class="size-full rounded-full bg-cover bg-center border-2 border-background-dark bg-gray-800 flex items-center justify-center text-2xl">🗡️</div>
-                                    </div>
-                                    <span class="text-sm font-medium text-slate-400 group-hover:text-white transition-colors">侍卫云墨</span>
-                                </div>
-                            </div>
-                        </div>
+                        <button class="btn-glow" onclick="startGame('endless')" style="width:100%; margin-top:10px; background: rgba(255,255,255,0.1);">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M12 12c-2-3-5.5-4-8-2-2.5 2-2.5 6 0 8 2.5 2 6 1 8-2 2 3 5.5 4 8 2 2.5-2 2.5-6 0-8-2.5-2-6-1-8 2z"></path></svg>
+                            无尽模式
+                        </button>
                     </div>
                 </div>
-
-                <!-- 社区评论区 (纯装饰，增加氛围感) -->
-                <section class="border-t border-white/5 pt-12">
-                    <div class="flex items-center justify-between mb-8">
-                        <h3 class="text-2xl font-bold text-white flex items-center gap-3">
-                            <span class="material-symbols-outlined text-cyan-accent">record_voice_over</span>
-                            玩家评价
-                        </h3>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="glass-card p-6 rounded-xl relative group hover:bg-white/5 transition-all">
-                            <p class="text-slate-300 text-sm leading-relaxed italic">
-                                "没想到能在AI生成的剧情里哭出来...皇子最后的独白太戳人了。"
-                            </p>
-                            <div class="mt-4 flex gap-2">
-                                <span class="text-[10px] uppercase bg-primary/20 text-primary px-2 py-1 rounded">虐心线</span>
-                            </div>
-                        </div>
-                        <div class="glass-card p-6 rounded-xl relative group hover:bg-white/5 transition-all">
-                            <p class="text-slate-300 text-sm leading-relaxed italic">
-                                "无尽模式简直有毒，每次进去都是不一样的展开，根本停不下来！"
-                            </p>
-                            <div class="mt-4 flex gap-2">
-                                <span class="text-[10px] uppercase bg-cyan-accent/20 text-cyan-accent px-2 py-1 rounded">无限流</span>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </main>
-        </div> 
+            </div>
 
             <div class="glass-panel" style="padding: 24px; border-radius: 24px; margin-bottom: 30px;">
                 <h3 style="margin-bottom: 16px; font-weight: 700;">主要角色</h3>
