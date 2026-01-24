@@ -1235,6 +1235,24 @@
                         };
                         optionsEl.appendChild(btn);
                     });
+                    
+                    // === 体验优化：如果只有一个选项，且该选项是“继续”，允许点击文本框触发 ===
+                    if (scene.options.length === 1 && scene.options[0].text === "继续") {
+                        const box = document.getElementById('gameTextBox');
+                        if(box) {
+                             box.onclick = () => {
+                                 if (isTyping) { skipTyping(); return; } // 如果在打字，先跳过
+                                 loadScene(scene.options[0].nextScene);  // 否则直接跳转
+                             };
+                        }
+                    } else {
+                         // 重置点击事件（防止干扰其他多选项场景）
+                         const box = document.getElementById('gameTextBox');
+                         if(box) {
+                             box.onclick = () => { if (isTyping) skipTyping(); };
+                         }
+                    }
+
                 }
                 return;
             }
@@ -1521,6 +1539,7 @@
             renderPersonaStrip();
             
             // 游戏文本区域点击：正在打字时跳过动画
+            // 注意：点击事件现在在 loadScene 里动态绑定了，这里保留做兜底
             const box = document.getElementById('gameTextBox');
             if (box) {
                 box.addEventListener('click', () => {
@@ -1810,7 +1829,7 @@
 
         // ==========================================
         //  核心修复：适配器函数
-        //  修复：自动检测线性剧情并生成“继续”按钮
+        //  修复：智能排序 + 自动检测线性剧情并生成“继续”按钮
         // ==========================================
         function adaptEditorData(json) {
             // 1. 检查是否是编辑器格式（特征：有 worldview 和 main_story）
@@ -1849,8 +1868,13 @@
                 
                 const newScripts = {};
                 
-                // 获取所有 Key 的数组，方便查找下一个场景
-                const sceneKeys = Object.keys(allScenes);
+                // === FIX START: 智能排序 ===
+                // 默认的 Object.keys 会把 main_10 排在 main_2 前面
+                // 我们使用 localeCompare(numeric=true) 来让 1, 2, 10 顺序正确
+                const sceneKeys = Object.keys(allScenes).sort((a, b) => {
+                    return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+                });
+                // === FIX END ===
 
                 sceneKeys.forEach((key, index) => {
                     const scene = allScenes[key];
@@ -1860,10 +1884,9 @@
                     }));
 
                     // === FIX START: 自动检测线性连接 ===
-                    // 如果该场景没有选项，且列表里还有下一个场景，自动连接
+                    // 如果该场景没有选项，且列表里还有下一个场景，自动连接到排好序的下一个 Key
                     if (newOptions.length === 0 && index < sceneKeys.length - 1) {
                          const nextKey = sceneKeys[index + 1];
-                         // 排除掉可能是侧边故事的乱序干扰，这里简单假设编辑器导出的顺序即为剧情顺序
                          newOptions.push({
                              text: "继续",
                              nextScene: nextKey
@@ -1881,11 +1904,11 @@
 
                 // --- D. 处理入口节点 (Start) ---
                 if (!newScripts['start']) {
+                    // 如果有 'start' 字段就用，没有就用排序后的第一个Key
                     if (newScripts['main_1']) {
                         newScripts['start'] = newScripts['main_1'];
-                    } else {
-                        const firstKey = Object.keys(newScripts)[0];
-                        if (firstKey) newScripts['start'] = newScripts[firstKey];
+                    } else if (sceneKeys.length > 0) {
+                        newScripts['start'] = newScripts[sceneKeys[0]];
                     }
                 }
 
