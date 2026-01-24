@@ -2009,6 +2009,53 @@ JSON 结构：
             }
         }
 
+        function selectPersonaAndStart(persona) {
+            currentPersonaId = persona.id;
+            closePersonaModal();
+            
+            // 更新详情页显示的人设名称
+            const label = document.getElementById('currentPersonaLabel');
+            if (label) label.textContent = persona.name;
+            
+            showToastMsg(`✅ 已选择身份：${persona.name}`);
+            
+            // 如果是从游戏启动触发的，继续启动游戏
+            if (pendingGameMode) {
+                startGame(pendingGameMode);
+                pendingGameMode = null;
+            }
+        }
+
+        function closePersonaModal() {
+            const modal = document.getElementById('personaModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function goToPersonaCreate() {
+            closePersonaModal();
+            switchView('persona');
+            resetPersonaForm();
+        }
+
+        function triggerAvatarUpload() {
+            document.getElementById('persona-avatar-input').click();
+        }
+
+        function updateGameDisplayName() {
+            // 该函数用于更新游戏内显示的玩家名称（可选功能）
+            // 目前暂不需要特殊处理
+        }
+
+        function showToastMsg(msg) {
+            const toast = document.getElementById('toast');
+            if (!toast) return;
+            toast.textContent = msg;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 2000);
+        }
+
         const CUSTOM_CSS_STORAGE = 'infinite.custom_css';
 
         function applyCustomCss() {
