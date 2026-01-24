@@ -57,6 +57,7 @@
             color: var(--text-main);
             min-height: 100vh;
             overflow-x: hidden;
+            /* 只有默认主题才有星空背景图，Reader主题会覆盖这个 */
             background-image: 
                 radial-gradient(circle at 10% 20%, rgba(217, 70, 239, 0.15) 0%, transparent 40%),
                 radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.15) 0%, transparent 40%),
@@ -65,10 +66,12 @@
             transition: background 0.5s, color 0.5s;
         }
 
+        /* 针对 Reader 主题的背景覆盖 */
         [data-theme="reader"] body {
             background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
         }
 
+        /* SVG 图标通用样式 */
         .icon {
             width: 20px; height: 20px;
             fill: none; stroke: currentColor; stroke-width: 2;
@@ -81,6 +84,7 @@
             background: conic-gradient(from 0deg at 50% 50%, rgba(139, 92, 246, 0.1), rgba(217, 70, 239, 0.1), rgba(6, 182, 212, 0.1), rgba(139, 92, 246, 0.1));
             filter: blur(80px); animation: rotate 20s linear infinite; z-index: -1; pointer-events: none;
         }
+        /* Reader 主题隐藏极光 */
         [data-theme="reader"] .aurora-bg { display: none; }
 
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -93,6 +97,7 @@
             border-top: 1px solid rgba(255,255,255,0.2);
             box-shadow: var(--shadow-card);
         }
+        /* Reader 主题去除玻璃高光 */
         [data-theme="reader"] .glass-panel { border-top: 1px solid var(--glass-border); backdrop-filter: none; }
 
         /* 登录页 */
@@ -118,7 +123,7 @@
             width: 100%; padding: 16px; border: none; border-radius: 16px;
             background: var(--gradient-holo); color: white; font-size: 16px; font-weight: 600;
             cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; position: relative; overflow: hidden;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
+            display: flex; align-items: center; justify-content: center; gap: 8px; /* 图标文字间距 */
         }
         .btn-glow:active { transform: scale(0.98); }
         .btn-glow:hover { box-shadow: 0 0 30px rgba(217, 70, 239, 0.4); }
@@ -146,7 +151,7 @@
             color: var(--text-muted); cursor: pointer; transition: all 0.3s;
         }
         .dock-item:hover, .dock-item.active { color: var(--text-main); background: rgba(255,255,255,0.15); transform: translateY(-5px); }
-        .dock-item.active { color: var(--primary); }
+        .dock-item.active { color: var(--primary); } /* Reader下用主色 */
         
         /* 视图容器 */
         .view-section { display: none; animation: fadeIn 0.4s ease; }
@@ -155,7 +160,7 @@
 
         /* 副本卡片 */
         .section-header { font-size: 24px; font-weight: 700; margin-bottom: 20px; background: linear-gradient(to right, var(--text-main), var(--text-muted)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; gap: 8px;}
-        .section-header svg { color: var(--text-main); -webkit-text-fill-color: initial; }
+        .section-header svg { color: var(--text-main); -webkit-text-fill-color: initial; } /* 图标不渐变 */
 
         .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
         .card-instance { border-radius: 24px; overflow: hidden; transition: transform 0.3s, box-shadow 0.3s; cursor: pointer; position: relative; }
@@ -185,14 +190,14 @@
         .tag-row { display: flex; gap: 10px; margin-top: 8px; }
         .tag { padding: 4px 10px; background: rgba(255,255,255,0.08); border-radius: 999px; font-size: 12px; }
 
-        /* 角色头像 */
+        /* 角色头像 (详情页) */
         .char-scroll { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px; scrollbar-width: none; }
         .char-item { flex: 0 0 auto; text-align: center; width: 80px; }
         .char-avatar { width: 80px; height: 80px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); padding: 2px; margin-bottom: 8px; position: relative; background: linear-gradient(135deg, var(--primary), var(--secondary)); overflow: hidden; display: flex; align-items: center; justify-content: center; }
         .char-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
         .char-name { font-size: 12px; color: var(--text-muted); }
 
-        /* 身份栏 */
+        /* 身份栏 (Story Style) */
         .persona-strip-container { display: flex; gap: 16px; overflow-x: auto; padding: 10px 4px; scrollbar-width: none; }
         .persona-strip-container::-webkit-scrollbar { display: none; }
         .story-ring { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; width: 64px; }
@@ -225,28 +230,147 @@
         .story-upload-area { margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
         .file-btn { display: inline-block; padding: 10px 20px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; cursor: pointer; color: var(--text-muted); font-size: 13px; }
 
-        /* === 📱 移动端深度适配 === */
+        /* === 记忆回廊 新增折叠样式 === */
+        .gallery-item {
+            background:var(--glass-surface); 
+            border-radius:12px; 
+            margin-bottom:12px; 
+            border-left:4px solid var(--primary); 
+            box-shadow:var(--shadow-card); 
+            overflow:hidden;
+            transition: all 0.3s ease;
+        }
+        .gallery-header {
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            background: rgba(255,255,255,0.02);
+        }
+        .gallery-header:hover {
+            background: rgba(255,255,255,0.05);
+        }
+        .gallery-toggle-icon {
+            transition: transform 0.3s;
+            opacity: 0.6;
+            font-size: 12px;
+        }
+        .gallery-content {
+            padding: 0 16px 16px 16px;
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+        .gallery-item.open .gallery-content {
+            display: block;
+        }
+        .gallery-item.open .gallery-toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        /* === 📱 移动端深度适配 (v4.5 修复版) === */
         @media (max-width: 768px) {
-            .grid-layout { grid-template-columns: 1fr 1fr; gap: 12px; }
-            .card-cover { height: 140px; background: #222; }
+            /* 1. 首页：调整卡片尺寸 (双列布局) */
+            .grid-layout { 
+                grid-template-columns: 1fr 1fr; 
+                gap: 12px;
+            }
+            .card-cover { 
+                height: 140px; 
+                background: #222;
+            }
             .card-title { font-size: 15px; margin-bottom: 4px; }
             .card-desc { font-size: 11px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
             .card-badge { top: 8px; left: 8px; padding: 2px 8px; font-size: 10px; }
+
+            /* 2. 副本详情页：重构为左图右文 */
+            .detail-layout {
+                flex-direction: row; /* 强制横向 */
+                flex-wrap: wrap;
+                padding: 16px;
+                gap: 16px;
+                align-items: flex-start;
+                background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+            }
+
+            /* 左侧封面图 (固定小尺寸) */
+            .detail-cover {
+                flex: 0 0 100px;
+                height: 140px;
+                width: 100px;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                margin-bottom: 0; /* 修正可能存在的边距 */
+            }
+
+            /* 右侧信息区 */
+            .detail-info {
+                flex: 1;
+                min-width: 0;
+                gap: 6px;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .detail-title { 
+                font-size: 18px; 
+                line-height: 1.2;
+                margin-bottom: 2px; 
+            }
             
-            .detail-layout { flex-direction: row; flex-wrap: wrap; padding: 16px; gap: 16px; align-items: flex-start; background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%); }
-            .detail-cover { flex: 0 0 100px; height: 140px; width: 100px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); margin-bottom: 0; }
-            .detail-info { flex: 1; min-width: 0; gap: 6px; display: flex; flex-direction: column; }
-            .detail-title { font-size: 18px; line-height: 1.2; margin-bottom: 2px; }
-            .detail-meta { font-size: 11px; opacity: 0.8; }
+            .detail-meta { 
+                font-size: 11px; 
+                opacity: 0.8;
+            }
+
             .tag-row { margin-top: 4px; gap: 6px; }
             .tag { padding: 2px 6px; font-size: 10px; background: rgba(255,255,255,0.1); }
-            .detail-desc { font-size: 12px; line-height: 1.4; color: var(--text-muted); margin-top: 6px; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+
+            .detail-desc {
+                font-size: 12px;
+                line-height: 1.4;
+                color: var(--text-muted);
+                margin-top: 6px;
+                display: -webkit-box;
+                -webkit-line-clamp: 4;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            /* 按钮区域：强制换行并填满 */
+            .detail-info > div:last-child {
+                margin-top: 12px;
+                width: calc(100% + 116px); /* 延伸宽度 */
+                margin-left: -116px;       /* 向左拉回 */
+                display: flex;
+                gap: 10px;
+            }
+
+            .detail-info .btn-glow {
+                padding: 0;
+                font-size: 13px;
+                border-radius: 10px;
+                height: 40px;
+            }
+
+            /* 无尽模式按钮 */
+            .detail-info + button.btn-glow {
+                margin-top: 0;
+                font-size: 12px;
+                padding: 0;
+                height: 36px;
+                opacity: 0.8;
+            }
+
+            /* 底部导航 Dock */
+            .dock-nav { 
+                width: 94%; 
+                padding: 10px 16px; 
+                justify-content: space-between;
+                bottom: 16px;
+            }
             
-            .detail-info > div:last-child { margin-top: 12px; width: calc(100% + 116px); margin-left: -116px; display: flex; gap: 10px; }
-            .detail-info .btn-glow { padding: 0; font-size: 13px; border-radius: 10px; height: 40px; }
-            .detail-info + button.btn-glow { margin-top: 0; font-size: 12px; padding: 0; height: 36px; opacity: 0.8; }
-            
-            .dock-nav { width: 94%; padding: 10px 16px; justify-content: space-between; bottom: 16px; }
+            /* 游戏界面 */
             .game-content { padding: 16px; }
             .game-text-box { font-size: 15px; padding: 16px; min-height: 100px; }
             .game-exit-btn { top: 12px; right: 12px; padding: 6px 12px; font-size: 12px; }
@@ -261,19 +385,10 @@
         .persona-select-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.05); cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
         .persona-select-item:hover, .persona-select-item.active { background: rgba(255,255,255,0.1); border-color: var(--primary); }
 
-        /* 记忆回放框样式 */
+        /* 新增：记忆回放框样式 */
         .log-container { background: rgba(0,0,0,0.1); border-radius: 12px; padding: 20px; height: 300px; overflow-y: auto; font-size: 14px; line-height: 1.8; white-space: pre-wrap; color: var(--text-muted); margin-top: 10px; }
         
-        /* 记忆回廊折叠样式 */
-        .gallery-item { background:var(--glass-surface); border-radius:12px; margin-bottom:12px; border-left:4px solid var(--primary); box-shadow:var(--shadow-card); overflow:hidden; transition: all 0.3s ease; }
-        .gallery-header { padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: rgba(255,255,255,0.02); }
-        .gallery-header:hover { background: rgba(255,255,255,0.05); }
-        .gallery-toggle-icon { transition: transform 0.3s; opacity: 0.6; font-size: 12px; }
-        .gallery-content { padding: 0 16px 16px 16px; display: none; animation: fadeIn 0.3s; }
-        .gallery-item.open .gallery-content { display: block; }
-        .gallery-item.open .gallery-toggle-icon { transform: rotate(180deg); }
-
-        /* Toast 提示框样式 */
+        /* 新增：Toast 提示框样式 */
         #toast { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.85); color: #fff; padding: 12px 24px; border-radius: 50px; display: none; z-index: 300; backdrop-filter: blur(10px); border: 1px solid var(--primary); font-weight: bold; animation: popIn 0.3s; }
         @keyframes popIn { from { transform: translate(-50%, -40%); opacity: 0; } to { transform: translate(-50%, -50%); opacity: 1; }}
     </style>
@@ -475,7 +590,7 @@
                 </div>
             </div>
 
-            <div class="settings-container glass-panel setting-group" style="margin-top: 24px;">
+    <div class="settings-container glass-panel setting-group" style="margin-top: 24px;">
                 <h3 style="margin-bottom: 20px; font-size: 18px;">🎨 自定义样式 (CSS)</h3>
                 <div style="margin-bottom:10px; font-size:12px; color:var(--text-muted);">
                     在此输入 CSS 代码可覆盖系统默认样式。例如：<br>
@@ -543,6 +658,7 @@
         const PERSONA_STORAGE = 'infinite.personas';
         const STORY_STORAGE = 'infinite.customStory';
         const FONT_STORAGE = 'infinite.customFont';
+        const CURRENT_PERSONA_STORAGE = 'infinite.currentPersonaId'; // 新增：持久化保存当前人设ID
 
         let currentPersonaId = null;
         let currentSceneId = null; // 全局记录当前场景 ID
@@ -617,14 +733,21 @@
 
         // 全局状态变量
         let currentDungeon = defaultDungeon;
-        let activeStoryData = currentDungeon.scripts; // 核心修复：确保它引用当前剧本的脚本
+        // 核心同步变量：确保游戏始终引用 currentDungeon.scripts
+        let activeStoryData = currentDungeon.scripts; 
 
         // 初始化
         function init() {
             loadApiConfig();
             loadTheme();
             loadCustomFont(); 
-            loadCustomStory(); // 这里会自动加载并更新 currentDungeon 和 activeStoryData
+            loadCustomStory(); // 这里会自动加载你上传的剧本
+
+            // 尝试读取上次使用的人设ID
+            const savedPersonaId = localStorage.getItem(CURRENT_PERSONA_STORAGE);
+            if (savedPersonaId) {
+                currentPersonaId = parseInt(savedPersonaId);
+            }
 
             // 用户名自动回填 + 自动进入主界面
             const nameInput = document.getElementById('username');
@@ -634,7 +757,8 @@
                 document.getElementById('displayName').textContent = savedName;
                 document.getElementById('loginPage').style.display = 'none';
                 document.getElementById('mainHub').style.display = 'block';
-                renderUI(); // 确保加载完剧本后渲染UI
+                // 确保数据已同步后渲染UI
+                renderUI();
                 switchView('hub');
             }
 
@@ -644,7 +768,17 @@
             });
 
             initPersonas();
-            renderUI(); 
+            renderUI(); // 渲染UI
+            
+            // 如果已有人设，更新界面显示
+            if (currentPersonaId) {
+                const allPersonas = loadPersonas();
+                const p = allPersonas.find(item => item.id === currentPersonaId);
+                if(p) {
+                    const label = document.getElementById('currentPersonaLabel');
+                    if(label) label.textContent = p.name;
+                }
+            }
         }
 
         // === 核心逻辑：UI动态渲染 ===
@@ -657,9 +791,12 @@
             const container = document.getElementById('hub-dungeon-list');
             if(!container) return;
 
+            // 清空列表
             container.innerHTML = '';
+
             const meta = currentDungeon.meta || defaultDungeon.meta;
             
+            // 1. 渲染当前生效的副本卡片
             const activeCard = document.createElement('div');
             activeCard.className = 'card-instance glass-panel';
             activeCard.onclick = showInstanceDetail;
@@ -675,6 +812,7 @@
             `;
             container.appendChild(activeCard);
 
+            // 2. 渲染一个装饰用的锁定卡片 (保持界面丰富)
             const lockedCard = document.createElement('div');
             lockedCard.className = 'card-instance glass-panel locked';
             lockedCard.innerHTML = `
@@ -704,11 +842,20 @@
             const meta = currentDungeon.meta || defaultDungeon.meta;
             const chars = currentDungeon.characters || [];
 
+            // 1. 渲染详情头部
             let tagsHtml = '';
             if(meta.tags && meta.tags.length){
                 meta.tags.forEach(t => tagsHtml += `<span class="tag">${t}</span>`);
             } else {
                 tagsHtml = `<span class="tag">自定义</span>`;
+            }
+            
+            // 获取当前人设名字用于显示
+            let currentPersonaName = "未选人设";
+            if (currentPersonaId) {
+                const allPersonas = loadPersonas();
+                const p = allPersonas.find(item => item.id === currentPersonaId);
+                if (p) currentPersonaName = p.name;
             }
 
             container.innerHTML = `
@@ -720,7 +867,7 @@
                         <div class="detail-title" style="display:flex; align-items:center; gap:12px;">
                             ${meta.title}
                             <div onclick="openPersonaModal()" style="font-size:14px; padding:4px 10px; background:rgba(255,255,255,0.1); border-radius:20px; cursor:pointer; border:1px solid rgba(255,255,255,0.2); display:flex; align-items:center; gap:4px;">
-                                <span id="currentPersonaLabel">未选人设</span>
+                                <span id="currentPersonaLabel">${currentPersonaName}</span>
                                 <svg class="icon" style="width:14px;height:14px;" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
                             </div>
                         </div>
@@ -748,6 +895,7 @@
                 </div>
             `;
 
+            // 2. 渲染角色列表
             charContainer.innerHTML = '';
             if(chars.length === 0) {
                  charContainer.innerHTML = '<div style="color:var(--text-muted); font-size:12px; width:100%; text-align:center;">暂无主要角色介绍</div>';
@@ -775,6 +923,7 @@
             const url = document.getElementById('customFontUrl').value.trim();
             if(!url) return;
             
+            // 简单处理：如果是CSS链接或文件链接
             if (url.endsWith('.css') || url.includes('fonts.googleapis.com')) {
                 const link = document.createElement('link');
                 link.rel = 'stylesheet';
@@ -798,6 +947,7 @@
             if(url) {
                 document.getElementById('customFontUrl').value = url;
                 const style = document.createElement('style');
+                // 这里做一个通用处理，默认如果是文件就用 UserCustomFont
                 if (url.endsWith('.css') || url.includes('fonts.googleapis.com')) {
                      const link = document.createElement('link');
                      link.rel = 'stylesheet';
@@ -815,16 +965,22 @@
 
         // 切换视图逻辑
         function switchView(viewName) {
+            // 隐藏所有视图
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            
+            // 显示目标视图
             const target = document.getElementById('view-' + viewName);
             if (target) target.classList.add('active');
 
+            // 如果是打开相册，加载存档列表
             if (viewName === 'gallery') {
                 renderGallery();
             }
 
+            // 更新底部 Dock 激活状态
             document.querySelectorAll('.dock-item').forEach(el => el.classList.remove('active'));
             
+            // 根据视图更新激活状态
             const dockItems = document.querySelectorAll('.dock-item');
             const viewMap = {
                 'hub': 0,
@@ -844,6 +1000,7 @@
         function enterHub() {
             const username = document.getElementById('username').value.trim();
             if (!username) {
+                // 简单的晃动动画
                 const card = document.querySelector('.login-card');
                 card.style.transform = 'translateX(10px)';
                 setTimeout(() => card.style.transform = 'translateX(0)', 100);
@@ -851,22 +1008,30 @@
                 setTimeout(() => card.style.transform = 'translateX(0)', 300);
                 return;
             }
+            
             document.getElementById('displayName').textContent = username;
             localStorage.setItem(USERNAME_STORAGE, username);
+            
+            // 切换界面
             document.getElementById('loginPage').style.display = 'none';
             document.getElementById('mainHub').style.display = 'block';
+            
+            // 默认显示副本页
             switchView('hub');
         }
 
+        // 显示副本详情
         function showInstanceDetail() {
             switchView('detail');
         }
 
         // ===== 游戏流程 =====
         function startGame(mode) {
+            // 如果是无尽模式或新开始，必须检查人设
             if (mode === 'start' || mode === 'endless') {
                 if (!currentPersonaId) {
-                    openPersonaModal(mode); 
+                    // 没有选人设，弹出选择框
+                    openPersonaModal(mode); // 把模式传过去，选完后自动开始
                     return;
                 }
             }
@@ -879,13 +1044,16 @@
             if (dock) dock.style.display = 'none';
             if (game) game.style.display = 'block';
             
+            // 更新顶部显示的名字（如果有）
             updateGameDisplayName();
 
             // 总是使用 activeStoryData (它通过引用指向 currentDungeon.scripts)
+            // 1. 如果是点击“继续游戏”
             if (mode === 'continue') {
                 const saveRaw = localStorage.getItem('infinite.save');
                 if (saveRaw) {
                     const save = JSON.parse(saveRaw);
+                    // 恢复记忆
                     activeStoryData.memory = save.memory || ''; 
                     loadScene(save.currentSceneId);
                     return;
@@ -894,15 +1062,18 @@
                 }
             }
 
+            // 2. 如果是新游戏，清空记忆
             if (mode !== 'continue') {
-                activeStoryData.memory = "故事开端。";
-                localStorage.removeItem('infinite.save');
+                activeStoryData.memory = "故事开端。"; // 初始化记忆
+                localStorage.removeItem('infinite.save'); // 清除旧档
             }
 
+            // 尝试从 main_story 获取起始节点
             let firstScene = 'start';
             if (mode === 'endless' && activeStoryData['plotBeginAi']) {
                 firstScene = 'plotBeginAi';
             } else if (!activeStoryData[firstScene]) {
+                // 如果没有 'start'，尝试找第一个Key
                 const keys = Object.keys(activeStoryData);
                 if (keys.length > 0) firstScene = keys[0];
             }
@@ -918,11 +1089,14 @@
             if (game) game.style.display = 'none';
             if (mainHub) mainHub.style.display = 'block';
             if (dock) dock.style.display = 'flex';
+
+            // 返回副本详情
             switchView('detail');
         }
 
+        // 修改：存档同时保存到历史记录
         function saveProgress(showToast = false) {
-            // 自动存档，仅存基本信息
+            // 自动存档，仅存基本信息，不触发AI总结
             const saveState = {
                 currentSceneId: currentSceneId || 'start',
                 memory: activeStoryData.memory || "",
@@ -939,10 +1113,13 @@
             const container = document.getElementById('storyLog'); 
             if (!container) return;
 
+            // --- 修复点：使用当前剧本的动态 Key，而不是写死 ---
             const dungeonKey = 'dungeon_' + (currentDungeon.meta.title || 'custom'); 
+            
             const allSaves = JSON.parse(localStorage.getItem('infinite.all_saves') || '{}');
             const dungeonSaves = Array.isArray(allSaves[dungeonKey]) ? allSaves[dungeonKey] : [null, null, null];
 
+            // 检查是否全空
             if (dungeonSaves.every(s => s === null)) {
                 container.innerHTML = `
                     <div style="text-align:center; color:var(--text-muted); padding:40px 20px;">
@@ -957,6 +1134,7 @@
             dungeonSaves.forEach((save, index) => {
                 if (!save) return;
 
+                // 渲染卡片：默认折叠，点击展开
                 html += `
                     <div class="gallery-item" id="gallery-item-${index}">
                         <div class="gallery-header" onclick="toggleGalleryItem(${index})">
@@ -989,9 +1167,11 @@
                     </div>
                 `;
             });
+            
             container.innerHTML = html;
         }
 
+        // 新增：切换折叠状态的辅助函数
         function toggleGalleryItem(index) {
             const item = document.getElementById(`gallery-item-${index}`);
             if(item) {
@@ -999,6 +1179,7 @@
             }
         }
 
+        // 新增：从槽位加载
         function loadGameFromSlot(slotIndex) {
             const dungeonKey = 'dungeon_' + (currentDungeon.meta.title || 'custom');
             const allSaves = JSON.parse(localStorage.getItem('infinite.all_saves') || '{}');
@@ -1011,9 +1192,10 @@
                 activeStoryData.memory = save.memory;
                 loadScene(save.sceneId);
                 
-                // 更新自动存档
+                // 更新“当前存档”为这个，方便下次快速点“继续游戏”
                 localStorage.setItem('infinite.save', JSON.stringify(save));
 
+                // 界面切换
                 document.getElementById('mainHub').style.display = 'none';
                 document.querySelector('.dock-nav').style.display = 'none';
                 document.getElementById('gameContainer').style.display = 'block';
@@ -1028,13 +1210,16 @@
         //  核心修复：loadScene 智能接管逻辑
         // ==========================================
         async function loadScene(sceneId) {
+            // 更新全局进度并自动存档
             currentSceneId = sceneId;
-            saveProgress(false); 
+            saveProgress(false); // 自动存档不弹提示
 
+            // 总是从 activeStoryData 读取
             let scene = activeStoryData[sceneId];
             const bgEl = document.getElementById('gameBg');
             const optionsEl = document.getElementById('gameOptions');
 
+            // 容错：如果是 AI 生成的临时后续 ID，但本地没有数据，我们需要在这里构造一个临时的 AI 请求
             if (!scene && sceneId.startsWith('ai_')) {
                 scene = {
                     type: 'ai',
@@ -1055,7 +1240,9 @@
 
             if (optionsEl) optionsEl.innerHTML = '';
 
+            // fixed 文本：直接打字机
             if (!scene.type || scene.type === 'fixed') {
+                // 处理 {{user}} 替换
                 const allPersonas = loadPersonas();
                 const myPersona = allPersonas.find(p => p.id === currentPersonaId);
                 const playerName = myPersona ? myPersona.name : "你";
@@ -1063,35 +1250,43 @@
                 displayText = displayText.replace(/{{user}}/g, playerName);
                 
                 typeWriter(displayText);
-                
+                // 渲染固定选项
                 if (scene.options && scene.options.length) {
                     scene.options.forEach(opt => {
                         const btn = document.createElement('button');
                         btn.className = 'game-option-btn';
                         btn.textContent = opt.text || opt.label; 
                         btn.onclick = () => {
+                            // === 核心逻辑修复：如果 nextScene 存在且有效，跳转；否则，统统交给 AI ===
                             if (opt.nextScene && activeStoryData[opt.nextScene]) {
                                 loadScene(opt.nextScene);
                             } else {
-                                // 智能接管：没有下一章配置，转AI生成
+                                // 走到这里说明：用户点击了选项，但没有对应的下一张固定剧本
+                                // 以前是直接 exitGame()，现在我们改成让 AI 接管
                                 const nextId = opt.nextScene || ('ai_gen_' + Date.now());
+                                
+                                // 创建一个临时的 AI 场景节点
                                 activeStoryData[nextId] = {
                                     type: 'ai',
-                                    bg: scene.bg, 
+                                    bg: scene.bg, // 继承背景
                                     prompt: `（接续剧情）玩家做出了选择：“${opt.text}”。请根据这个选择继续撰写后续剧情，保持沉浸感。`
                                 };
+                                
+                                // 播放这个新场景
                                 loadScene(nextId);
                             }
                         };
                         optionsEl.appendChild(btn);
                     });
                     
-                    // 点击文本框继续的优化
+                    // === 体验优化：如果只有一个选项，且该选项是“继续”，允许点击文本框触发 ===
                     if (scene.options.length === 1 && scene.options[0].text === "继续") {
                         const box = document.getElementById('gameTextBox');
                         if(box) {
                              box.onclick = () => {
                                  if (isTyping) { skipTyping(); return; } 
+                                 
+                                 // 同样应用上面的智能接管逻辑
                                  const opt = scene.options[0];
                                  if (opt.nextScene && activeStoryData[opt.nextScene]) {
                                      loadScene(opt.nextScene);
@@ -1107,26 +1302,32 @@
                              };
                         }
                     } else {
+                         // 重置点击事件（防止干扰其他多选项场景）
                          const box = document.getElementById('gameTextBox');
                          if(box) {
                              box.onclick = () => { if (isTyping) skipTyping(); };
                          }
                     }
+
                 }
                 return;
             }
 
+            // ai 文本：先显示 loading，再请求 OpenAI
             if (scene.type === 'ai') {
                 const textEl = document.getElementById('gameText');
                 if (textEl) {
                     textEl.innerHTML = '⚡ 正在连接神经元...<br><span style="font-size:12px;opacity:0.6;">正在生成剧情...</span>';
                 }
 
-                // AI生成：传入 currentSceneId 方便 AI 理解进度
+                // 这里调用 AI 生成，需传入 activeScripts 以便读取 memory
+                // 关键修复：确保 activeStoryData 同步
                 const generated = await generateAiSceneText(sceneId, scene, activeStoryData);
                 
+                // 如果生成失败，generated 会是错误信息的字符串
                 if (typeof generated === 'string' && generated.startsWith('❌')) {
-                    typeWriter(generated); 
+                    typeWriter(generated); // 显示错误信息
+                    // 给个重试按钮
                     const btn = document.createElement('button');
                     btn.className = 'game-option-btn';
                     btn.textContent = '重试';
@@ -1136,8 +1337,10 @@
                 }
 
                 const finalText = generated.text || (typeof generated === 'string' ? generated : 'AI 生成了空内容');
+
                 typeWriter(finalText);
 
+                // 如果 AI 返回了新的选项，替换当前 options
                 if (generated.options && Array.isArray(generated.options) && generated.options.length) {
                     optionsEl.innerHTML = '';
                     generated.options.forEach(opt => {
@@ -1145,12 +1348,15 @@
                         btn.className = 'game-option-btn';
                         btn.textContent = opt.text;
                         btn.onclick = () => {
+                            // 这里 AI 生成的 nextScene 可能是 null 或者一个新的 ID
+                            // 如果是 null，我们假设它是一个新的 AI 节点
                             let nextId = opt.nextScene;
                             if (!nextId || nextId === 'null') {
                                 nextId = 'ai_next_' + Date.now();
+                                // 临时存入 activeScripts 以便 loadScene 能找到上下文
                                 activeStoryData[nextId] = {
                                     type: 'ai',
-                                    bg: scene.bg, 
+                                    bg: scene.bg, // 沿用背景
                                     prompt: `用户选择了：${opt.text}。请根据这个选择继续剧情。`
                                 };
                             }
@@ -1159,6 +1365,7 @@
                         optionsEl.appendChild(btn);
                     });
                 } else {
+                    // AI 没返回选项，给默认
                     const btn = document.createElement('button');
                     btn.className = 'game-option-btn';
                     btn.textContent = '继续';
@@ -1177,22 +1384,28 @@
                 return "❌ 请先在“系统设置”中配置 API Key";
             }
 
+            // 1. 准备上下文数据
             const memory = activeScripts.memory || "故事开始。";
             const prompt = scene.prompt || "继续剧情。";
             
+            // 获取玩家人设
             const allPersonas = loadPersonas();
             const myPersona = allPersonas.find(p => p.id === currentPersonaId) || { name: "旅行者", desc: "未知" };
 
-            // 构建世界观与NPC名册
+            // --- 核心升级：构建世界观与NPC名册 ---
             const worldSetting = currentDungeon.meta.desc || "一个未知的世界";
             
+            // 自动遍历角色列表，生成 AI 可读的介绍
             let npcRoster = "暂无特定NPC信息";
             if (currentDungeon.characters && currentDungeon.characters.length > 0) {
                 npcRoster = currentDungeon.characters.map(c => {
+                    // 如果有 desc 字段就用，没有就只给名字
                     return `- ${c.name}${c.desc ? ' (' + c.desc + ')' : ''}`;
                 }).join("\n");
             }
+            // ------------------------------------
 
+            // 2. 构建 System Prompt (注入所有设定)
             const systemPrompt = `
 你是一个高自由度文字冒险游戏的 AI 导演 (DM)。
 
@@ -1243,7 +1456,7 @@ JSON 结构：
                             { role: "system", content: systemPrompt },
                             { role: "user", content: `(当前场景 ID: ${sceneId})\n${prompt}` }
                         ],
-                        temperature: 0.85 
+                        temperature: 0.85 // 稍微调高创造性
                     })
                 });
 
@@ -1252,10 +1465,12 @@ JSON 结构：
                 const data = await response.json();
                 const content = data.choices[0].message.content;
 
+                // 解析 JSON
                 try {
                     const cleanContent = content.replace(/```json/g, '').replace(/```/g, '').trim();
                     const jsonResult = JSON.parse(cleanContent);
                     
+                    // 自动更新记忆
                     if (jsonResult.new_memory) {
                         activeScripts.memory += "\n" + jsonResult.new_memory;
                         if (activeScripts.memory.length > 3000) {
@@ -1265,6 +1480,7 @@ JSON 结构：
                     return jsonResult;
 
                 } catch (e) {
+                    // 降级处理：如果是纯文本
                     return { text: content, options: [] };
                 }
 
@@ -1317,9 +1533,11 @@ JSON 结构：
             const config = JSON.parse(configRaw);
             if (!config.key) return "（API Key为空，无法生成总结）";
 
+            // 截取最近的记忆，防止超过 token 限制
             const recentContext = memoryText.slice(-4000); 
 
             let baseUrl = config.url || 'https://api.openai.com/v1';
+            // 处理 URL 格式
             baseUrl = baseUrl.replace(/\/+$/, '');
             if (baseUrl.endsWith('/chat/completions')) baseUrl = baseUrl.replace(/\/chat\/completions$/, '');
             if (!baseUrl.endsWith('/v1')) baseUrl += '/v1';
@@ -1355,6 +1573,7 @@ JSON 结构：
                 return data.choices?.[0]?.message?.content || "（AI 总结生成失败）";
             } catch (e) {
                 console.error("总结生成出错:", e);
+                // 降级处理：如果 AI 失败，抓取一段原文作为总结，不让存档空着
                 return "（网络连接失败，暂无详细总结）" + memoryText.slice(-100) + "...";
             }
         }
@@ -1380,6 +1599,7 @@ JSON 结构：
             
             localStorage.setItem('apiConfig', JSON.stringify(config));
             
+            // 保存成功反馈
             const btn = event.target;
             const originalText = btn.innerHTML;
             btn.innerHTML = '✅ 配置已保存';
@@ -1390,6 +1610,7 @@ JSON 结构：
             }, 2000);
         }
 
+        // 加载 API 配置
         function loadApiConfig() {
             const savedConfig = localStorage.getItem('apiConfig');
             if (savedConfig) {
@@ -1399,8 +1620,10 @@ JSON 结构：
                     document.getElementById('apiUrl').value = config.url || '';
                     document.getElementById('settingsApiKey').value = config.key || '';
                     
+                    // 如果有保存的模型，添加到下拉框
                     if (config.model) {
                         const modelSelect = document.getElementById('apiModel');
+                        // 如果列表里没有这个选项，动态加一个
                         if (!Array.from(modelSelect.options).some(opt => opt.value === config.model)) {
                              const option = document.createElement('option');
                              option.value = config.model;
@@ -1414,7 +1637,7 @@ JSON 结构：
                 }
             }
         }
-
+        // 测试 API 连接并获取模型列表
         async function testApiConnection() {
             const apiUrl = document.getElementById('apiUrl').value.trim();
             const apiKey = document.getElementById('settingsApiKey').value.trim();
@@ -1429,6 +1652,8 @@ JSON 结构：
             showApiTestResult('🔄 正在测试连接...', 'loading');
 
             try {
+                // 尝试获取模型列表
+                // 兼容：有些代理需要 /v1/models，有些是 /models
                 let modelsUrl = apiUrl.replace(/\/$/, '');
                 if (modelsUrl.endsWith('/v1')) modelsUrl = modelsUrl.replace(/\/v1$/, '');
                 if (modelsUrl.endsWith('/chat/completions')) modelsUrl = modelsUrl.replace(/\/chat\/completions$/, '');
@@ -1452,9 +1677,11 @@ JSON 结构：
                 const data = await res.json();
                 
                 if (data.data && Array.isArray(data.data)) {
+                    // 成功获取模型列表
                     const models = data.data;
                     showApiTestResult(` 连接成功！找到 ${models.length} 个可用模型`, 'success');
                     
+                    // 填充模型下拉框
                     modelSelect.innerHTML = '<option value="">-- 请选择模型 --</option>';
                     models.forEach(model => {
                         const option = document.createElement('option');
@@ -1463,6 +1690,7 @@ JSON 结构：
                         modelSelect.appendChild(option);
                     });
 
+                    // 如果之前保存过模型，自动选中
                     const savedConfig = localStorage.getItem('apiConfig');
                     if (savedConfig) {
                         try {
@@ -1497,9 +1725,12 @@ JSON 结构：
             resultDiv.style.display = 'block';
         }
 
+        // 主题切换（v20 版本的主题系统）
         function changeTheme(theme) {
             document.body.setAttribute('data-theme', theme);
             localStorage.setItem('theme', theme);
+            
+            // 更新主题按钮状态
             document.querySelectorAll('.theme-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if (btn.getAttribute('data-theme') === theme) {
@@ -1508,11 +1739,13 @@ JSON 结构：
             });
         }
 
+        // 加载主题
         function loadTheme() {
             const savedTheme = localStorage.getItem('theme') || 'purple';
             changeTheme(savedTheme);
         }
 
+        // ===== 个人设定：本地多档位 + 头像上传 =====
         function loadPersonas() {
             try {
                 const raw = localStorage.getItem(PERSONA_STORAGE);
@@ -1530,6 +1763,8 @@ JSON 结构：
 
         function initPersonas() {
             renderPersonaStrip();
+            
+            // 游戏文本区域点击：正在打字时跳过动画
             const box = document.getElementById('gameTextBox');
             if (box) {
                 box.addEventListener('click', () => {
@@ -1540,6 +1775,9 @@ JSON 结构：
             }
         }
         
+        // ==========================================
+        //  修复版：身份栏渲染 (支持高亮 + 新建按钮)
+        // ==========================================
         function renderPersonaStrip() {
             const strip = document.getElementById('persona-strip');
             if (!strip) return;
@@ -1547,9 +1785,11 @@ JSON 结构：
             strip.className = 'persona-strip-container'; 
             strip.innerHTML = '';
 
+            // 1. 【固定添加】第一个圈圈：“+ 新身份”
             const newBtn = document.createElement('div');
             newBtn.className = 'story-ring';
             newBtn.onclick = () => resetPersonaForm(); 
+            // 如果是新建模式 (currentPersonaId 为 null)，给个高亮
             const newActive = currentPersonaId === null ? 'border: 2px solid var(--primary);' : '';
 
             newBtn.innerHTML = `
@@ -1562,6 +1802,7 @@ JSON 结构：
             `;
             strip.appendChild(newBtn);
 
+            // 2. 【渲染列表】读取保存的身份
             const list = loadPersonas();
             list.forEach((p) => {
                 const item = document.createElement('div');
@@ -1572,6 +1813,7 @@ JSON 结构：
                     ? `<img src="${p.avatar}">` 
                     : `<span style="font-size:20px">👤</span>`;
 
+                // 选中高亮逻辑
                 const isSelected = (currentPersonaId === p.id);
                 const activeStyle = isSelected ? 'border: 2px solid var(--primary); transform: scale(1.1); transition: all 0.2s;' : '';
 
@@ -1587,10 +1829,14 @@ JSON 结构：
             });
         }
 
+        // ==========================================
+        //  修复版：保存逻辑 (含异常处理 + 更新旧档)
+        // ==========================================
         function savePersona() {
             const name = document.getElementById('persona-name').value.trim();
             const desc = document.getElementById('persona-desc').value.trim();
             const imgEl = document.getElementById('persona-avatar-preview');
+            // 只有显示的图片才算有效
             const avatar = (imgEl.style.display !== 'none' && imgEl.src) ? imgEl.src : '';
             
             if (!name) {
@@ -1602,23 +1848,34 @@ JSON 结构：
 
             try {
                 if (currentPersonaId) {
+                    // --- 情况A：修改已有身份 ---
                     const index = list.findIndex(p => p.id === currentPersonaId);
                     if (index !== -1) {
                         list[index] = { ...list[index], name, desc, avatar };
                         showToastMsg("💾 身份信息已更新");
                     }
                 } else {
+                    // --- 情况B：创建新身份 ---
                     const newId = Date.now();
                     const newP = { id: newId, name, desc, avatar };
                     list.push(newP);
                     currentPersonaId = newId; 
+                    // 新增：保存新建的ID到localStorage
+                    localStorage.setItem(CURRENT_PERSONA_STORAGE, currentPersonaId);
                     showToastMsg("✨ 新身份已创建");
                 }
 
                 savePersonas(list);
-                renderPersonaStrip(); 
+                renderPersonaStrip(); // 刷新顶部栏状态
+                
+                // 刷新主界面标签
+                if (currentPersonaId) {
+                    const label = document.getElementById('currentPersonaLabel');
+                    if(label) label.textContent = name;
+                }
 
             } catch (e) {
+                // 捕获存储满的错误
                 if (e.name === 'QuotaExceededError') {
                     alert(" 保存失败：图片太大了！\n浏览器存不下了，请换张小图或者不传头像。");
                 } else {
@@ -1628,6 +1885,7 @@ JSON 结构：
             }
         }
 
+        // 切换到：新建模式
         function resetPersonaForm() {
             document.getElementById('persona-name').value = '';
             document.getElementById('persona-desc').value = '';
@@ -1641,10 +1899,14 @@ JSON 结构：
             renderPersonaStrip();
         }
 
+        // 切换到：查看模式
         function loadPersonaDetail(p) {
             document.getElementById('persona-name').value = p.name || '';
             document.getElementById('persona-desc').value = p.desc || '';
             currentPersonaId = p.id; 
+            
+            // 记录选中的ID
+            localStorage.setItem(CURRENT_PERSONA_STORAGE, currentPersonaId);
             
             if (p.avatar) {
                 const img = document.getElementById('persona-avatar-preview');
@@ -1655,13 +1917,18 @@ JSON 结构：
                 document.getElementById('persona-avatar-preview').style.display = 'none';
                 document.getElementById('persona-placeholder').style.display = 'block';
             }
-            renderPersonaStrip(); 
+            
+            renderPersonaStrip(); // 刷新高亮
         }
         
+        // ==========================================
+        //  修复版：图片压缩 (防止存不下)
+        // ==========================================
         function onAvatarFileChange(e) {
              const file = e.target.files[0];
              if(!file) return;
 
+             // 提示一下大文件
              if (file.size > 2 * 1024 * 1024) {
                  showToastMsg(" 图片较大，正在压缩...");
              }
@@ -1671,9 +1938,11 @@ JSON 结构：
                  const img = new Image();
                  img.src = evt.target.result;
                  img.onload = function() {
+                     // 创建 Canvas 压缩图片
                      const canvas = document.createElement('canvas');
                      const ctx = canvas.getContext('2d');
                      
+                     // 限制最大宽高为 300px (头像够用了)
                      const MAX_SIZE = 300;
                      let width = img.width;
                      let height = img.height;
@@ -1694,6 +1963,7 @@ JSON 结构：
                      canvas.height = height;
                      ctx.drawImage(img, 0, 0, width, height);
                      
+                     // 压缩为 JPEG，质量 0.7
                      const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
                      
                      const previewEl = document.getElementById('persona-avatar-preview');
@@ -1707,19 +1977,26 @@ JSON 结构：
         
         function clearMemory() {
              if(confirm("确定要清空所有记忆吗？")) {
-                 activeStoryData.memory = "";
-                 const container = document.getElementById('storyLog');
-                 if(container) container.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">暂无探索记录</div>';
-                 
+                 // 清空数据
+                 const dungeonKey = 'dungeon_forbidden_city'; // 或者使用当前副本的Key
                  localStorage.removeItem('infinite.all_saves');
+                 
+                 // 重新渲染空的回廊
+                 const container = document.getElementById('storyLog');
+                 if(container) container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px;">暂无探索记录</div>';
              }
         }
 
-        // === 编辑器格式适配器 ===
+        // ==========================================
+        //  核心修复：适配器函数
+        //  修复：智能排序 + 自动检测线性剧情并生成“继续”按钮
+        // ==========================================
         function adaptEditorData(json) {
+            // 1. 检查是否是编辑器格式（特征：有 worldview 和 main_story）
             if (json.worldview && json.main_story) {
                 console.log("检测到编辑器格式，正在转换...");
                 
+                // --- A. 转换元数据 (Meta) ---
                 let coverImg = "";
                 const firstMain = json.main_story[Object.keys(json.main_story)[0]];
                 if (firstMain && firstMain.background) coverImg = firstMain.background;
@@ -1731,17 +2008,18 @@ JSON 结构：
                     tags: ["编辑器作品", "自定义"]
                 };
 
+                // --- B. 转换角色 (Characters) ---
                 const newChars = [];
                 if (json.characters) {
                     Object.values(json.characters).forEach(c => {
                         newChars.push({
                             name: c.name,
-                            avatar: c.avatar || "",
-                            desc: c.description || "" 
+                            avatar: c.avatar || "" 
                         });
                     });
                 }
 
+                // --- C. 转换剧本 (Scripts) ---
                 const allScenes = { 
                     ...json.main_story, 
                     ...json.side_stories, 
@@ -1750,9 +2028,13 @@ JSON 结构：
                 
                 const newScripts = {};
                 
+                // === FIX START: 智能排序 ===
+                // 默认的 Object.keys 会把 main_10 排在 main_2 前面
+                // 我们使用 localeCompare(numeric=true) 来让 1, 2, 10 顺序正确
                 const sceneKeys = Object.keys(allScenes).sort((a, b) => {
                     return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
                 });
+                // === FIX END ===
 
                 sceneKeys.forEach((key, index) => {
                     const scene = allScenes[key];
@@ -1761,6 +2043,8 @@ JSON 结构：
                         nextScene: opt.nextScene 
                     }));
 
+                    // === FIX START: 自动检测线性连接 ===
+                    // 如果该场景没有选项，且列表里还有下一个场景，自动连接到排好序的下一个 Key
                     if (newOptions.length === 0 && index < sceneKeys.length - 1) {
                          const nextKey = sceneKeys[index + 1];
                          newOptions.push({
@@ -1768,6 +2052,7 @@ JSON 结构：
                              nextScene: nextKey
                          });
                     }
+                    // === FIX END ===
 
                     newScripts[key] = {
                         type: 'fixed', 
@@ -1777,7 +2062,9 @@ JSON 结构：
                     };
                 });
 
+                // --- D. 处理入口节点 (Start) ---
                 if (!newScripts['start']) {
+                    // 如果有 'start' 字段就用，没有就用排序后的第一个Key
                     if (newScripts['main_1']) {
                         newScripts['start'] = newScripts['main_1'];
                     } else if (sceneKeys.length > 0) {
@@ -1791,85 +2078,8 @@ JSON 结构：
                     scripts: newScripts
                 };
             }
+            // 如果不是编辑器格式，原样返回
             return json;
-        }
-
-        function loadCustomStory() {
-            const raw = localStorage.getItem(STORY_STORAGE);
-            if (!raw) {
-                currentDungeon = defaultDungeon;
-                activeStoryData = currentDungeon.scripts;
-                return;
-            }
-            try {
-                let parsed = JSON.parse(raw);
-                parsed = adaptEditorData(parsed);
-
-                if (parsed.meta && parsed.scripts) {
-                    currentDungeon = parsed;
-                } else if (parsed.start || parsed.main_story) {
-                     currentDungeon = {
-                        meta: { title: "自定义剧本", desc: "本地剧本", cover: "", tags: ["本地"] },
-                        characters: [],
-                        scripts: parsed
-                    };
-                } else {
-                    currentDungeon = defaultDungeon;
-                }
-                
-                // 关键同步：确保 activeStoryData 指向新加载的剧本脚本
-                activeStoryData = currentDungeon.scripts;
-            } catch (e) {
-                console.warn('剧本解析失败', e);
-                currentDungeon = defaultDungeon;
-                activeStoryData = currentDungeon.scripts;
-            }
-        }
-        
-        function handleStoryUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    let json = JSON.parse(e.target.result);
-                    json = adaptEditorData(json); 
-
-                    if (!json.scripts || !json.meta) {
-                        throw new Error("无法识别的剧本格式，请确认包含 scripts 或 main_story");
-                    }
-
-                    localStorage.setItem(STORY_STORAGE, JSON.stringify(json));
-                    
-                    if(confirm("上传新剧本将覆盖当前副本并重置进度，是否继续？")) {
-                        localStorage.removeItem('infinite.save');
-                        localStorage.removeItem('infinite.all_saves');
-                        
-                        loadCustomStory(); // 这会重新加载并同步 activeStoryData
-                        renderUI(); 
-                        
-                        document.getElementById('storyUploadMsg').textContent = `✅ 成功加载: ${file.name}`;
-                        alert("副本已更新！");
-                        switchView('hub');
-                    }
-                } catch (err) {
-                    console.error(err);
-                    alert("剧本文件格式错误: " + err.message);
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        function resetStory() {
-            if(confirm("确定要恢复到默认的《紫禁城迷梦》吗？")) {
-                localStorage.removeItem(STORY_STORAGE);
-                currentDungeon = defaultDungeon;
-                activeStoryData = currentDungeon.scripts;
-                renderUI();
-                document.getElementById('storyUploadMsg').textContent = "";
-                alert('已恢复默认剧本');
-            }
         }
 
         // ==========================================
@@ -1966,6 +2176,9 @@ JSON 结构：
 
         let pendingGameMode = null; 
 
+        // ==========================================
+        //  修复：弹窗内人设选择逻辑（加回了创建按钮）
+        // ==========================================
         function openPersonaModal(mode = null) {
             pendingGameMode = mode;
             const modal = document.getElementById('personaModal');
@@ -1980,9 +2193,21 @@ JSON 结构：
             
             const list = loadPersonas();
             
+            // --- 修复点：无论列表是否为空，都显示创建按钮 ---
+            const newBtn = document.createElement('div');
+            newBtn.className = 'persona-select-item';
+            newBtn.style.justifyContent = 'center';
+            newBtn.style.border = '1px dashed var(--primary)';
+            newBtn.innerHTML = '+ 创建新身份';
+            newBtn.onclick = goToPersonaCreate;
+            listContainer.appendChild(newBtn);
+            // ------------------------------------------
+            
             if (list.length === 0) {
-                listContainer.style.display = 'none';
-                emptyState.style.display = 'block';
+                // 如果没有已存人设，显示空状态（其实有了创建按钮后，空状态可以不需要，但保留做提示）
+                // 这里我们稍微改一下，如果有列表就显示列表，没有就只显示创建按钮
+                listContainer.style.display = 'grid';
+                emptyState.style.display = 'none';
             } else {
                 listContainer.style.display = 'grid';
                 emptyState.style.display = 'none';
@@ -2006,6 +2231,25 @@ JSON 结构：
                     `;
                     listContainer.appendChild(el);
                 });
+            }
+        }
+        
+        function selectPersonaAndStart(p) {
+            currentPersonaId = p.id;
+            
+            // 持久化保存选择
+            localStorage.setItem(CURRENT_PERSONA_STORAGE, currentPersonaId);
+            
+            // 更新界面上的小标签
+            const label = document.getElementById('currentPersonaLabel');
+            if(label) label.textContent = p.name;
+            
+            showToastMsg(` 已切换身份：${p.name}`);
+            closePersonaModal();
+            
+            // 如果之前是因为点击了“开始游戏”才弹窗的，现在自动继续
+            if (pendingGameMode) {
+                startGame(pendingGameMode);
             }
         }
 
