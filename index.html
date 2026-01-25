@@ -3355,6 +3355,38 @@ JSON 结构：
                     if (fileInput) fileInput.value = '';
                 }
 
+                function onAvatarFileChange(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    // 简单校验图片
+                    if (!file.type.startsWith('image/')) {
+                        showToastMsg('❌ 请上传图片文件');
+                        return;
+                    }
+
+                    // 限制大小 (例如 2MB)
+                    if (file.size > 2 * 1024 * 1024) {
+                        showToastMsg('⚠️ 图片过大，建议小于 2MB');
+                        // 继续处理，只是警告
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const preview = document.getElementById('persona-avatar-preview');
+                        const placeholder = document.getElementById('persona-placeholder');
+
+                        if (preview) {
+                            preview.src = e.target.result;
+                            preview.style.display = 'block';
+                        }
+                        if (placeholder) {
+                            placeholder.style.display = 'none';
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+
                 function updateGameDisplayName() {
                     // 该函数用于更新游戏内显示的玩家名称（可选功能）
                     // 目前暂不需要特殊处理
