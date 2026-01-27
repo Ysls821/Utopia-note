@@ -556,6 +556,16 @@
                             oninput="saveWorld()">
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label>封面图 (URL 或 本地上传)</label>
+                    <div class="image-input-group">
+                        <input type="text" id="worldCover" oninput="saveWorld()" placeholder="https://..."
+                            style="flex:1">
+                        <button class="btn btn-outline" onclick="triggerUpload('worldCover')">📂</button>
+                        <img id="preview_worldCover" class="image-preview-mini">
+                    </div>
+                </div>
                 <button class="btn btn-success btn-full btn-float-save" onclick="manualSave()">
                     <svg class="svg-icon" viewBox="0 0 24 24">
                         <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
@@ -597,15 +607,80 @@
                         <div style="flex:1"><label>ID (自动生成)</label><input type="text" id="sceneId" disabled
                                 style="opacity:0.8; color:var(--success); font-weight:bold;"></div>
                         <div style="width:100px"><label>类型</label>
-                            <select id="sceneType" onchange="saveCurrentItem()">
-                                <option value="fixed">固定</option>
-                                <option value="ai">AI生成</option>
+                            <select id="sceneType" onchange="switchSceneType()">
+                                <option value="fixed">Fixed (固定)</option>
+                                <option value="sandbox">Sandbox (沙盒)</option>
+                                <option value="bridge">Bridge (连接)</option>
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label>剧情文本 / AI Prompt</label>
-                        <textarea id="sceneContent" style="height: 120px;" oninput="saveCurrentItem()"></textarea>
+
+                    <!-- Fixed Settings -->
+                    <div id="fixed-settings">
+                        <div class="form-group">
+                            <label>渲染模式 (Render Mode)</label>
+                            <select id="renderMode" onchange="saveCurrentItem()">
+                                <option value="direct">文本直接展示 (默认)</option>
+                                <option value="outline">AI 扩写大纲</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>剧情文本 (Content)</label>
+                            <textarea id="sceneContent" style="height: 120px;" oninput="saveCurrentItem()"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <div
+                                style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                <label style="margin:0">分支选项 (Options)</label>
+                                <button class="btn btn-primary" style="padding:4px 8px; font-size:12px;"
+                                    onclick="addOption()">+ 添加</button>
+                            </div>
+                            <div id="optionsList"></div>
+                        </div>
+                    </div>
+
+                    <!-- Sandbox Settings -->
+                    <div id="sandbox-settings" style="display:none;">
+                        <div class="form-group">
+                            <label>初始引导语 (Guide)</label>
+                            <textarea id="sceneGuide" style="height: 80px;" oninput="saveCurrentItem()"
+                                placeholder="承接上文，用于AI生成的前奏..."></textarea>
+                        </div>
+                        <div class="option-card">
+                            <label style="margin-bottom:10px; display:block; color:var(--primary);">🎲 沙盒设置</label>
+                            <div class="form-group">
+                                <label>最大回合数 (Max Turns)</label>
+                                <input type="number" id="sbMaxTurns" min="1" max="20" value="5"
+                                    oninput="saveCurrentItem()">
+                            </div>
+                            <div class="form-group">
+                                <label>收束目标主线ID (Target Scene)</label>
+                                <input type="text" id="sbTargetScene" oninput="saveCurrentItem()"
+                                    placeholder="例如: main_5">
+                            </div>
+                            <div class="form-group">
+                                <label>收束连接语 (Convergence Text)</label>
+                                <textarea id="sbConvText" style="height:60px;" oninput="saveCurrentItem()"
+                                    placeholder="连接固定剧情的过渡语..."></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>AI Prompt (可选)</label>
+                            <textarea id="scenePrompt" style="height: 80px;" oninput="saveCurrentItem()"
+                                placeholder="规定此轮玩法中AI需要遵循的指令..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Bridge Settings -->
+                    <div id="bridge-settings" style="display:none;">
+                        <div class="form-group">
+                            <label>备注 (可选)</label>
+                            <textarea id="bridgeNote" style="height: 60px;" oninput="saveCurrentItem()"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>下一场景ID (Next Scene ID)</label>
+                            <input type="text" id="bridgeNextScene" oninput="saveCurrentItem()" placeholder="跳转至...">
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -616,16 +691,6 @@
                             <button class="btn btn-outline" onclick="triggerUpload('sceneBg')">📂</button>
                             <img id="preview_sceneBg" class="image-preview-mini">
                         </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div
-                            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                            <label style="margin:0">分支选项</label>
-                            <button class="btn btn-primary" style="padding:4px 8px; font-size:12px;"
-                                onclick="addOption()">+ 添加</button>
-                        </div>
-                        <div id="optionsList"></div>
                     </div>
 
                     <button class="btn btn-success btn-full btn-float-save" onclick="manualSave()">💾 保存并刷新预览</button>
@@ -727,6 +792,8 @@
             </div>
 
             <div style="padding:15px 20px; background:rgba(0,0,0,0.2);">
+                <button class="btn btn-primary btn-full" style="background:var(--success); margin-bottom:10px;"
+                    onclick="createNewProject()">✨ 新建 / 清空当前画布</button>
                 <button class="btn btn-primary btn-full" onclick="saveToLibrary()">💾 将当前副本保存到记录</button>
                 <div style="font-size:12px; color:var(--text-muted); margin-top:8px; text-align:center;">
                     ⚠️ 数据存储在浏览器本地，清空缓存会丢失。建议定期导出 JSON 备份。
@@ -755,9 +822,17 @@
         let currentUploadTargetId = null; // 记录当前正在给哪个输入框传图
 
         function init() {
+            // 自动加载上次未保存的进度
+            const autoSaveData = localStorage.getItem('utopia_autosave');
+            if (autoSaveData) {
+                try {
+                    fullData = JSON.parse(autoSaveData);
+                    console.log('✅ 已恢复自动保存的进度');
+                } catch (e) {
+                    console.error('自动保存数据损坏');
+                }
+            }
             switchSection('world');
-            // 首次尝试读取本地数据?
-            // 可选: 自动加载上次未保存的 (这里暂不自动加载，避免覆盖)
         }
 
         // UUID 生成
@@ -810,7 +885,11 @@
                         const inputEl = document.getElementById(currentUploadTargetId);
                         inputEl.value = dataUrl;
                         // 触发保存和预览
-                        saveCurrentItem();
+                        if (currentSection === 'world') {
+                            saveWorld();
+                        } else {
+                            saveCurrentItem();
+                        }
                     }
                     // 清空 file input 以便下次能选同一张图
                     e.target.value = '';
@@ -846,8 +925,16 @@
                 document.getElementById('worldTag1').value = tags[0] || "";
                 document.getElementById('worldTag2').value = tags[1] || "";
 
+                // Load Cover
+                document.getElementById('worldCover').value = fullData.worldview.coverUrl || "";
+                const mini = document.getElementById('preview_worldCover');
+                if (fullData.worldview.coverUrl) { mini.src = fullData.worldview.coverUrl; mini.style.display = 'block'; } else { mini.style.display = 'none'; }
+
                 updatePreviewVisual(null);
                 if (window.innerWidth <= 768) switchMobileTab('edit');
+
+                // 清空左侧列表，因为世界观不需要列表
+                document.getElementById('itemList').innerHTML = '';
             } else {
                 renderSidebarList();
                 if (section === 'chars') {
@@ -965,17 +1052,48 @@
                 document.getElementById('sceneEmpty').style.display = 'none';
 
                 document.getElementById('sceneId').value = id;
-                document.getElementById('sceneType').value = data.type || 'fixed';
-                document.getElementById('sceneContent').value = data.text || data.prompt || "";
+                document.getElementById('sceneType').value = data.type || 'fixed'; // Default to fixed
+
+                // 加载数据
+                document.getElementById('renderMode').value = data.renderMode || 'direct';
+                document.getElementById('sceneContent').value = data.text || ""; // Fixed & comments
+                // Sandbox
+                document.getElementById('sceneGuide').value = data.guide || "";
+                document.getElementById('sbMaxTurns').value = data.maxTurns || 10;
+                document.getElementById('sbTargetScene').value = data.targetScene || "";
+                document.getElementById('sbConvText').value = data.convergenceText || "";
+                document.getElementById('scenePrompt').value = data.prompt || "";
+                // Bridge
+                document.getElementById('bridgeNote').value = data.text || ""; // Re-use text field for bridge note
+                document.getElementById('bridgeNextScene').value = data.nextScene || "";
+
                 document.getElementById('sceneBg').value = data.background || "";
 
                 // 迷你预览更新
                 const mini = document.getElementById('preview_sceneBg');
                 if (data.background) { mini.src = data.background; mini.style.display = 'block'; } else { mini.style.display = 'none'; }
 
+                switchSceneType(false); // Update UI visibility, don't save
                 renderOptionsForm(data.options || []);
                 updatePreviewVisual(data);
             }
+        }
+
+        function switchSceneType(shouldSave = true) {
+            const type = document.getElementById('sceneType').value;
+            const fixedPanel = document.getElementById('fixed-settings');
+            const sandboxPanel = document.getElementById('sandbox-settings');
+            const bridgePanel = document.getElementById('bridge-settings');
+
+            fixedPanel.style.display = 'none';
+            sandboxPanel.style.display = 'none';
+            bridgePanel.style.display = 'none';
+
+            if (type === 'fixed') fixedPanel.style.display = 'block';
+            else if (type === 'sandbox') sandboxPanel.style.display = 'block';
+            else if (type === 'bridge') bridgePanel.style.display = 'block';
+
+            if (shouldSave) saveCurrentItem();
         }
 
         function updatePreviewVisual(data) {
@@ -994,11 +1112,37 @@
                 bg.style.backgroundColor = '#111';
             }
 
-            text.textContent = data.text || data.prompt || "(空文本)";
-            if (data.type === 'ai') text.innerHTML = "⚡ [AI 模式] <br>" + text.textContent;
+            text.textContent = data.text || data.guide || "(空)";
+
+            if (false && data.type === 'sandbox') {
+                // Spinning Top Icon SVG
+                const icon = `<svg viewBox="0 0 24 24" style="width:16px;height:16px;vertical-align:text-bottom;fill:none;stroke:currentColor;stroke-width:2;">
+                    <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07L19.07 4.93" style="opacity:0.5"/>
+                    <circle cx="12" cy="12" r="6" />
+                    <circle cx="12" cy="12" r="2" fill="currentColor"/>
+                </svg>`;
+                // Or a simple "Magic" icon or "Spinning Top" if I can find a better path. 
+                // Let's use a "Sparkles/Magic" style to easier denote "AI" + "Sandbox". 
+                // User suggested "Spinning Top". Let's try to draw a simple one.
+                // Top: triangle pointing down, stick on top.
+                const topIcon = `<svg viewBox="0 0 24 24" style="width:18px;height:18px;vertical-align:text-bottom;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;">
+                    <path d="M12 20l-9-9c0-1.5 1-4 4.5-4h9c3.5 0 4.5 2.5 4.5 4L12 20z" />
+                    <path d="M12 2v5" />
+                    <path d="M12 20v2" />
+                    <path d="M2 12h20" style="opacity:0.3"/> 
+                </svg>`;
+
+                text.innerHTML = `<span style="color:var(--primary); font-weight:600; display:inline-flex; align-items:center; gap:4px;">
+                    ${topIcon} 进入沙盒模式
+                </span><br><br>${data.guide || ''}`;
+            } else if (data.type === 'bridge') {
+                text.innerHTML = `🌉 [Bridge] -> ${data.nextScene || '?'}`;
+            } else if (data.renderMode === 'outline') {
+                text.innerHTML = `✨ [AI Outline] <br>${data.text || ''}`;
+            }
 
             opts.innerHTML = '';
-            if (data.options) {
+            if (data.type === 'fixed' && data.options) {
                 data.options.forEach(o => {
                     const btn = document.createElement('span');
                     btn.className = 'phone-btn';
@@ -1014,10 +1158,11 @@
             let newObj;
             if (currentSection === 'chars') newObj = { name: "新角色", persona: "" };
             else if (currentSection === 'world_book') newObj = { keys: "关键词", content: "" };
-            else newObj = { type: "fixed", text: "新剧情...", options: [] };
+            else newObj = { type: "fixed", renderMode: "direct", text: "新剧情...", options: [] };
 
             getDataMapBySection()[newId] = newObj;
             loadItem(newId);
+            triggerAutoSave();
         }
 
         function saveWorld() {
@@ -1031,6 +1176,13 @@
             fullData.worldview.tags = [];
             if (t1) fullData.worldview.tags.push(t1);
             if (t2) fullData.worldview.tags.push(t2);
+
+            fullData.worldview.coverUrl = document.getElementById('worldCover').value;
+            // 迷你预览同步
+            const mini = document.getElementById('preview_worldCover');
+            if (fullData.worldview.coverUrl) { mini.src = fullData.worldview.coverUrl; mini.style.display = 'block'; } else { mini.style.display = 'none'; }
+
+            triggerAutoSave();
         }
 
         function saveCurrentItem() {
@@ -1053,11 +1205,30 @@
                 item.content = document.getElementById('wbContent').value;
                 renderSidebarList();
             } else {
+                // Scene Saving Logic
                 item.type = document.getElementById('sceneType').value;
-                const content = document.getElementById('sceneContent').value;
-                if (item.type === 'ai') { item.prompt = content; delete item.text; }
-                else { item.text = content; delete item.prompt; }
                 item.background = document.getElementById('sceneBg').value;
+
+                if (item.type === 'fixed') {
+                    item.renderMode = document.getElementById('renderMode').value;
+                    item.text = document.getElementById('sceneContent').value;
+                    // Options handled in their own functions
+                    // clear others
+                    delete item.guide; delete item.maxTurns; delete item.targetScene; delete item.convergenceText; delete item.prompt; delete item.nextScene;
+                } else if (item.type === 'sandbox') {
+                    item.guide = document.getElementById('sceneGuide').value;
+                    item.maxTurns = parseInt(document.getElementById('sbMaxTurns').value) || 10;
+                    item.targetScene = document.getElementById('sbTargetScene').value;
+                    item.convergenceText = document.getElementById('sbConvText').value;
+                    item.prompt = document.getElementById('scenePrompt').value;
+                    // clear others
+                    delete item.text; delete item.renderMode; delete item.options; delete item.nextScene;
+                } else if (item.type === 'bridge') {
+                    item.text = document.getElementById('bridgeNote').value; // Bridge uses text as note
+                    item.nextScene = document.getElementById('bridgeNextScene').value;
+                    // clear others
+                    delete item.renderMode; delete item.options; delete item.guide; delete item.maxTurns; delete item.targetScene; delete item.convergenceText; delete item.prompt;
+                }
 
                 // 迷你预览同步
                 const mini = document.getElementById('preview_sceneBg');
@@ -1065,6 +1236,7 @@
 
                 updatePreviewVisual(item);
             }
+            triggerAutoSave();
         }
 
         function manualSave() {
@@ -1093,6 +1265,7 @@
                 document.getElementById('wbEmpty').style.display = 'block';
                 renderSidebarList();
                 if (window.innerWidth <= 768) switchMobileTab('list');
+                triggerAutoSave();
             }
         }
 
@@ -1130,12 +1303,14 @@
             map[currentItemId].options.push({ label: "", nextScene: "" });
             renderOptionsForm(map[currentItemId].options);
             updatePreviewVisual(map[currentItemId]);
+            triggerAutoSave();
         }
 
         function updateOpt(idx, key, val) {
             const item = getDataMapBySection()[currentItemId];
             item.options[idx][key] = val;
             updatePreviewVisual(item);
+            triggerAutoSave();
         }
 
         function delOpt(idx) {
@@ -1143,6 +1318,7 @@
             item.options.splice(idx, 1);
             renderOptionsForm(item.options);
             updatePreviewVisual(item);
+            triggerAutoSave();
         }
 
         function exportJson() {
@@ -1167,6 +1343,7 @@
                     if (!fullData.worldview.tags) fullData.worldview.tags = [];
                     // remove summary if exists or ignore
                     if (!fullData.id) fullData.id = generateUUID();
+                    triggerAutoSave();
 
                     switchSection('world');
                     alert('导入成功！记得点开“副本记录”保存哦~');
@@ -1300,6 +1477,28 @@
                 a.href = url;
                 a.download = (item.name || "script") + ".json";
                 a.click();
+            }
+        }
+
+        function triggerAutoSave() {
+            localStorage.setItem('utopia_autosave', JSON.stringify(fullData));
+        }
+
+        function createNewProject() {
+            if (confirm('⚠️ 确定要清空当前所有内容并新建吗？\n未保存到“副本记录”或导出的内容将会丢失！')) {
+                fullData = {
+                    id: generateUUID(),
+                    worldview: { name: "", author: "", description: "", tags: [] },
+                    world_book: {},
+                    characters: {},
+                    main_story: {},
+                    side_stories: {},
+                    char_routes: {}
+                };
+                triggerAutoSave(); // 立即保存空状态，防止刷新后恢复旧数据
+                switchSection('world');
+                toggleLibrary(); // 关闭弹窗
+                alert('已重置，开始新的创作吧！');
             }
         }
 
