@@ -1193,10 +1193,18 @@
                 padding: 16px;
             }
 
-            .game-text-box {
-                font-size: 15px;
-                padding: 16px;
-                min-height: 100px;
+            .modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                backdrop-filter: blur(5px);
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
 
             .game-exit-btn {
@@ -1419,6 +1427,11 @@
             border: 1px solid #b0bec5;
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
         }
+
+        /* Reader Theme Card Badge Fix */
+        body[data-theme="reader"] .card-badge {
+            color: #fff;
+        }
     </style>
 </head>
 
@@ -1514,12 +1527,16 @@
             </div>
         </div>
 
-        <div class="view-section" id="view-shop">
-            <h2 class="section-header">道具商店</h2>
+        <div class="view-section" id="view-private">
+            <h2 class="section-header">自留地</h2>
             <div class="settings-container glass-panel setting-group">
-                <p style="color: var(--text-muted); line-height: 1.8;">
-                    魅力口红、测谎仪、限定门票等道具即将上线...
-                </p>
+                <div style="text-align: center; padding: 40px 20px;">
+                    <div style="font-size: 48px; opacity: 0.5; margin-bottom: 20px;">📻</div>
+                    <h3 style="margin-bottom: 10px;">留音匣</h3>
+                    <p style="color: var(--text-muted); font-size: 14px;">
+                        这里是属于你的私密空间。<br>与角色的私聊功能正在搭建中...
+                    </p>
+                </div>
             </div>
         </div>
 
@@ -1836,11 +1853,9 @@
                     <polyline points="21 15 16 10 5 21"></polyline>
                 </svg>
             </div>
-            <div class="dock-item" onclick="switchView('shop')" title="道具商店">
+            <div class="dock-item" onclick="switchView('private')" title="自留地">
                 <svg class="icon dock-icon" viewBox="0 0 24 24">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                 </svg>
             </div>
             <div class="dock-item" onclick="switchView('persona')" title="我的设定">
@@ -1864,21 +1879,117 @@
         <div id="gameBg" class="game-bg"></div>
 
         <!-- 悬浮菜单容器 -->
+        <!-- 悬浮菜单容器 -->
+        <!-- 悬浮菜单容器 -->
+        <style>
+            .menu-toggle-btn svg {
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .menu-toggle-btn.active svg {
+                transform: rotate(90deg);
+            }
+
+            /* 统一按钮样式 - 白底毛玻璃 */
+            .game-menu-btn-glass {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.1);
+                /* 改回白底透明 */
+                backdrop-filter: blur(8px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.2s;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            .game-menu-btn-glass:hover {
+                background: rgba(255, 255, 255, 0.2);
+                transform: scale(1.05);
+            }
+
+            /* 菜单容器调整 - 整体位置 */
+            .game-menu-container {
+                position: fixed;
+                /* 确保定位准确 */
+                top: 24px;
+                /* 稍微往上提一点 */
+                left: 24px;
+                z-index: 100;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                /* 增加间距 */
+            }
+
+            /* 展开的菜单项 - 横向排列 */
+            .menu-items {
+                display: none;
+                flex-direction: row;
+                /* 横向排列 */
+                gap: 8px;
+                padding: 4px;
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                border-radius: 50px;
+                /* 圆角条 */
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                margin-left: 8px;
+            }
+
+            .menu-items.show {
+                display: flex;
+                animation: fadeInLeft 0.3s ease;
+            }
+
+            @keyframes fadeInLeft {
+                from {
+                    opacity: 0;
+                    transform: translateX(-10px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+        </style>
+
         <div class="game-menu-container" onclick="event.stopPropagation()">
-            <button class="menu-toggle-btn" onclick="toggleGameMenu()" id="gameMenuToggle">
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+            <!-- 1. 独立退出的按钮 -->
+            <button class="game-menu-btn-glass" onclick="checkExit()" title="退出">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M15 18l-6-6 6-6" />
+                    <path d="M19 12H5M12 19l-7-7 7-7" />
                 </svg>
             </button>
+
+            <!-- 2. 控制菜单的开关 -->
+            <button class="menu-toggle-btn game-menu-btn-glass" onclick="toggleGameMenu()" id="gameMenuToggle">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="5" r="1"></circle>
+                    <circle cx="12" cy="12" r="1"></circle>
+                    <circle cx="12" cy="19" r="1"></circle>
+                </svg>
+            </button>
+
+            <!-- 3. 折叠菜单内容 (横向展开) -->
             <div class="menu-items" id="gameMenuItems">
-                <button class="menu-btn world-book-btn" onclick="openWorldBookModal()" title="世界书">
+                <button class="game-menu-btn-glass" style="width:36px; height:36px;" onclick="openWorldBookModal()"
+                    title="世界书">
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                         <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
                     </svg>
                 </button>
-                <button class="menu-btn magic-btn" onclick="openPlayerCssModal()" title="自定义样式">
+                <button class="game-menu-btn-glass" style="width:36px; height:36px;" onclick="openPlayerCssModal()"
+                    title="自定义样式">
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path
                             d="M15 4V2M15 16v-2M8 9h2M20 9h2M17.8 11.8L19 13M17.8 6.2L19 5M12.2 11.8L11 13M12.2 6.2L11 5" />
@@ -1887,8 +1998,15 @@
                         <path d="m12 12 1.5 1.5" />
                     </svg>
                 </button>
-                <button class="menu-btn save-btn" onclick="openSaveSlotModal()">存档</button>
-                <button class="menu-btn exit-btn" onclick="exitGame()">退出</button>
+                <button class="game-menu-btn-glass" style="width:36px; height:36px;" onclick="openSaveSlotModal()"
+                    title="存档">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                </button>
             </div>
         </div>
 
@@ -1994,6 +2112,64 @@
         // 剧情日志 - 累积用户看到的所有剧情文本，用于存档时的AI总结
         let storyLog = "";
 
+        // ==========================================
+        //  IndexedDB 大容量存储 (支持 50MB+ 副本)
+        // ==========================================
+        const DB_NAME = 'InfiniteDungeonsDB';
+        const DB_VERSION = 1;
+        const STORE_NAME = 'dungeons';
+
+        function openDungeonDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => resolve(request.result);
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+                    }
+                };
+            });
+        }
+
+        async function saveDungeonToDB(dungeon) {
+            const db = await openDungeonDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(STORE_NAME, 'readwrite');
+                const store = tx.objectStore(STORE_NAME);
+                // 确保有唯一ID
+                if (!dungeon.id) {
+                    dungeon.id = Date.now();
+                }
+                const request = store.put(dungeon);
+                request.onsuccess = () => resolve(dungeon.id);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        async function loadDungeonsFromDB() {
+            const db = await openDungeonDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(STORE_NAME, 'readonly');
+                const store = tx.objectStore(STORE_NAME);
+                const request = store.getAll();
+                request.onsuccess = () => resolve(request.result || []);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        async function deleteDungeonFromDB(id) {
+            const db = await openDungeonDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(STORE_NAME, 'readwrite');
+                const store = tx.objectStore(STORE_NAME);
+                const request = store.delete(id);
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject(request.error);
+            });
+        }
+
         // --- 默认副本数据 (统一入口) ---
         const defaultDungeon = {
             meta: {
@@ -2059,6 +2235,7 @@
         // 全局状态变量
         let currentDungeon = defaultDungeon;
         let activeStoryData = currentDungeon.scripts; // 核心修复：确保它引用当前剧本的脚本
+        let hasUnsavedChanges = false; // 追踪未保存的改动
 
         // 初始化
         function init() {
@@ -2066,6 +2243,7 @@
             loadTheme();
             loadCustomFont();
             loadCustomStory(); // 这里会自动加载并更新 currentDungeon 和 activeStoryData
+            loadAllDungeons(); // 显式加载所有副本列表
 
             // 用户名自动回填 + 自动进入主界面
             const nameInput = document.getElementById('username');
@@ -2100,8 +2278,9 @@
 
             container.innerHTML = '';
 
-            // 加载所有副本（默认 + 用户上传）
-            loadAllDungeons();
+            // 渲染所有副本
+            // 注意：不要在这里调用 loadAllDungeons()，否则会导致 IndexedDB 异步加载回调的无限递归
+            // loadAllDungeons() 应当在 init() 或数据变更时显式调用
 
             // 渲染所有副本
             allDungeons.forEach((dungeon, index) => {
@@ -2116,9 +2295,9 @@
                     <div class="card-menu-wrapper">
                         <button class="card-menu-btn" onclick="event.stopPropagation(); toggleCardMenu(this)" title="更多操作">
                             <svg class="icon" viewBox="0 0 24 24" style="width:18px;height:18px;">
-                                <circle cx="12" cy="5" r="1.5"></circle>
-                                <circle cx="12" cy="12" r="1.5"></circle>
-                                <circle cx="12" cy="19" r="1.5"></circle>
+                                <circle cx="12" cy="5" r="2" fill="currentColor"></circle>
+                                <circle cx="12" cy="12" r="2" fill="currentColor"></circle>
+                                <circle cx="12" cy="19" r="2" fill="currentColor"></circle>
                             </svg>
                         </button>
                         <div class="card-dropdown-menu">
@@ -2168,9 +2347,11 @@
         }
 
         // 加载所有副本（默认 + 用户上传）
+        let isLoadingFromDB = false; // 防止重复加载
         function loadAllDungeons() {
             allDungeons = [defaultDungeon]; // 默认副本始终第一个
 
+            // 从 localStorage 加载用户副本
             try {
                 const raw = localStorage.getItem(DUNGEONS_STORAGE);
                 if (raw) {
@@ -2185,6 +2366,43 @@
                 }
             } catch (e) {
                 console.warn('加载副本列表失败', e);
+            }
+
+            // 异步从 IndexedDB 加载（后台补充）
+            if (!isLoadingFromDB) {
+                isLoadingFromDB = true;
+                loadDungeonsFromDB().then(dbDungeons => {
+                    let added = 0;
+                    dbDungeons.forEach(d => {
+                        if (d && d.meta && d.scripts) {
+                            // 避免重复（优先检查 ID）
+                            const exists = allDungeons.some(existing => {
+                                if (d.id && existing.id) {
+                                    return d.id === existing.id;
+                                }
+                                // 如果新副本有ID而现有副本无ID，视为不同
+                                if (d.id && !existing.id) {
+                                    return false;
+                                }
+                                // 仅当都无ID时，才降级比较标题
+                                return existing.meta.title === d.meta.title;
+                            });
+
+                            if (!exists) {
+                                allDungeons.push(adaptEditorData(d));
+                                added++;
+                            }
+                        }
+                    });
+                    if (added > 0) {
+                        console.log('[IndexedDB] 补充加载了', added, '个副本');
+                        renderHub(); // 现在可以安全调用，因为 renderHub 不再反向调用 loadAllDungeons
+                    }
+                    isLoadingFromDB = false;
+                }).catch(e => {
+                    console.warn('[loadAllDungeons] IndexedDB 加载失败', e);
+                    isLoadingFromDB = false;
+                });
             }
         }
 
@@ -2449,7 +2667,7 @@
             const viewMap = {
                 'hub': 0,
                 'gallery': 1,
-                'shop': 2,
+                'private': 2,
                 'persona': 3,
                 'settings': 4
             };
@@ -3015,28 +3233,92 @@
             // 获取记忆内容
             const memoryContent = activeStoryData.memory || '';
 
-            const systemPrompt = `你是一位文笔华丽的故事续写大师，擅长以细腻的笔触描绘场景、情感与人物互动。
+            // RAG: 检索相关世界书条目
+            const ragQuery = scenePrompt + ' ' + memoryContent.slice(-500);
+            const relevantWorldBookEntries = retrieveWorldBookEntries(ragQuery, 3);
+            const worldBookText = relevantWorldBookEntries.length > 0
+                ? relevantWorldBookEntries.map(e => `【${e.title}】: ${e.content}`).join('\n')
+                : '（暂无相关世界书条目）';
 
-【🌍 世界观设定】
-${worldSetting}
+            // 构建世界观标签
+            const worldTags = (currentDungeon.meta.tags || []).join('、') || '未知';
 
-【👤 主角设定】
-姓名：${myPersona.name}
-背景：${myPersona.desc}
+            // 构建NPC卡片
+            let characterCards = '暂无特定NPC信息';
+            if (currentDungeon.characters && currentDungeon.characters.length > 0) {
+                characterCards = currentDungeon.characters.map(c => {
+                    return `- ${c.name}${c.desc ? ': ' + c.desc : ''}`;
+                }).join('\n');
+            }
 
-${memoryContent ? `【📚 剧情记忆】\n${memoryContent.slice(-500)}` : ''}
+            // 获取沙盒状态
+            const currentTurn = sandboxState.currentTurn || 1;
+            const maxTurns = sandboxState.maxTurns || 10;
+            const guideText = scene.guide || '（无前置引导）';
+            const convergenceText = sandboxState.convergenceText || '（剧情自然发展）';
 
-${scenePrompt ? `【🎭 本场景导演指令】\n${scenePrompt}` : ''}
+            // 构建聊天记录
+            let chatHistoryText = '（对话刚刚开始）';
+            if (sandboxState.chatHistory && sandboxState.chatHistory.length > 0) {
+                chatHistoryText = sandboxState.chatHistory.slice(-6).map(msg => {
+                    const role = msg.role === 'user' ? '【玩家】' : '【叙事】';
+                    return `${role}: ${msg.content.slice(0, 200)}${msg.content.length > 200 ? '...' : ''}`;
+                }).join('\n');
+            }
 
-【✍️ 创作要求】
-请你以第二人称视角，用华丽典雅的小说体续写故事。你的文字应当：
-- 沉浸感强：通过五感描写构建身临其境的氛围
-- 细节丰富：对环境、动作、神态进行细腻刻画
-- 篇幅充足：**必须输出至少 200 字**，禁止过短的回复
-- 格式规范：直接输出正文，不要包含 Markdown 代码块或 JSON 格式
+            const systemPrompt = `# Role (角色定义)
+你是一位精通网文写作风格的"文游引导者"和"小说家"。你的任务是在即时互动的沙盒模式中，为用户（玩家）提供沉浸式的剧情续写体验。
+你不需要负责剧情的开篇（已有引导语）和最终结局（已有收束语），你需要负责的是两者中间的"过程演绎"。
 
-当前进度：第 ${sandboxState.currentTurn + 1} 幕，共 ${sandboxState.maxTurns} 幕
-`;
+# Context Data (上下文数据 - 请严格读取)
+<World_Setting>
+世界观描述: ${worldSetting}
+世界观标签: ${worldTags}
+
+[RAG检索到的相关世界书条目]:
+${worldBookText}
+</World_Setting>
+
+<Character_Cards>
+[玩家角色]: ${myPersona.name} - ${myPersona.desc || '未知背景'}
+[当前NPC/交互对象]:
+${characterCards}
+</Character_Cards>
+
+<Story_Status>
+[前置引导]: ${guideText}
+[最终目标]: 剧情最终将流向 -> ${convergenceText}
+[当前进度]: 第 ${currentTurn + 1} / ${maxTurns} 回合
+[剧情摘要]: ${memoryContent.slice(-1500)}
+</Story_Status>
+
+<Chat_History>
+${chatHistoryText}
+</Chat_History>
+
+<Current_Instruction>
+[本轮场景指令]: ${scenePrompt || '（无特定指令，自由发挥）'}
+</Current_Instruction>
+
+# Constraints & Rules (核心规则)
+1. **内容创作**：
+   - 字数限制：严格控制在 300-500 字之间。
+   - 文风要求：模仿小说体叙事风格，描写细腻，代入感强。
+   - 逻辑一致：绝对遵守 <World_Setting> 和 <Character_Cards>，严禁人物 OOC（性格崩坏）。
+   - 主体内容：以正文描写为主，包含环境描写、心理活动、对话和动作。
+
+2. **沙盒控制 (重要)**：
+   - 这是一个"中间过程"。你的回复必须顺承[前置引导]或上一轮对话，并隐隐为流向[最终目标]做铺垫。
+   - **进度控制**：
+     - 若当前是初期回合(1-3)：侧重展开情节，给予玩家高自由度。
+     - 若当前是末期回合(接近 ${maxTurns})：开始收束剧情线索，引导玩家向 [最终目标] 的情境靠拢，但不要直接输出收束语。
+
+3. **互动反馈**：
+   - 必须响应玩家的行动意图。如果玩家的行为逻辑通顺，请予以执行并描写结果；如果玩家行为严重违背世界观，请以巧妙的叙事方式修正。
+
+# Output Format (输出格式)
+请直接输出小说正文内容（300-500字），不要输出 JSON 格式，不要包含 markdown 代码块。`;
+
 
             const messages = [
                 { role: 'system', content: systemPrompt },
@@ -3431,35 +3713,102 @@ ${scenePrompt ? `【📜 本场景特殊指令】：${scenePrompt}` : ''}
                     .replace('{{playerDesc}}', myPersona.desc)
                     .replace('{{memory}}', memory.slice(-2000));
             } else {
-                // 使用默认Prompt
-                systemPrompt = `
-你是一个高自由度文字冒险游戏的 AI 导演 (DM)。
+                // 使用默认Prompt - 结构化文游引导者模板
 
-【🌍 世界观设定】：
-${worldSetting}
+                // RAG: 检索相关世界书条目
+                const ragQuery = prompt + ' ' + memory.slice(-500);
+                const relevantWorldBookEntries = retrieveWorldBookEntries(ragQuery, 3);
+                const worldBookText = relevantWorldBookEntries.length > 0
+                    ? relevantWorldBookEntries.map(e => `【${e.title}】: ${e.content}`).join('\n')
+                    : '（暂无相关世界书条目）';
 
-【👥 登场角色名录】：
-${npcRoster}
+                // 构建世界观标签
+                const worldTags = (currentDungeon.meta.tags || []).join('、') || '未知';
 
-【👤 玩家当前人设】：
-- 姓名：${myPersona.name}
-- 设定：${myPersona.desc}
-(请让玩家的遭遇和互动符合上述人设)
+                // 构建NPC卡片
+                let characterCards = '暂无特定NPC信息';
+                if (currentDungeon.characters && currentDungeon.characters.length > 0) {
+                    characterCards = currentDungeon.characters.map(c => {
+                        return `- ${c.name}${c.desc ? ': ' + c.desc : ''}`;
+                    }).join('\n');
+                }
 
-【📜 前情提要】：
-${memory.slice(-2000)} (只保留最近记忆)
+                // 获取沙盒状态
+                const currentTurn = sandboxState.currentTurn || 1;
+                const maxTurns = sandboxState.maxTurns || 10;
+                const guideText = scene.guide || '（无前置引导）';
+                const convergenceText = sandboxState.convergenceText || '（剧情自然发展）';
 
-【⚡ 任务指令】：
-请根据前情提要和玩家的最新选择，接续生成一段剧情。
-1. **沉浸感**：环境描写要细腻，符合世界观。小说体。300字左右。
-2. **角色扮演**：NPC 的对话风格必须符合其设定。
-3. **格式要求**：请仅输出标准的 JSON 格式，不要包含 markdown 代码块标记。
-JSON 结构：
+                // 构建聊天记录
+                let chatHistoryText = '（对话刚刚开始）';
+                if (sandboxState.chatHistory && sandboxState.chatHistory.length > 0) {
+                    chatHistoryText = sandboxState.chatHistory.slice(-6).map(msg => {
+                        const role = msg.role === 'user' ? '【玩家】' : '【叙事】';
+                        return `${role}: ${msg.content.slice(0, 200)}${msg.content.length > 200 ? '...' : ''}`;
+                    }).join('\n');
+                }
+
+                systemPrompt = `# Role (角色定义)
+你是一位精通网文写作风格的"文游引导者"和"小说家"。你的任务是在即时互动的沙盒模式中，为用户（玩家）提供沉浸式的剧情续写体验。
+你不需要负责剧情的开篇（已有引导语）和最终结局（已有收束语），你需要负责的是两者中间的"过程演绎"。
+
+# Context Data (上下文数据 - 请严格读取)
+<World_Setting>
+世界观描述: ${worldSetting}
+世界观标签: ${worldTags}
+
+[RAG检索到的相关世界书条目]:
+${worldBookText}
+</World_Setting>
+
+<Character_Cards>
+[玩家角色]: ${myPersona.name} - ${myPersona.desc || '未知背景'}
+[当前NPC/交互对象]:
+${characterCards}
+</Character_Cards>
+
+<Story_Status>
+[前置引导]: ${guideText}
+[最终目标]: 剧情最终将流向 -> ${convergenceText}
+[当前进度]: 第 ${currentTurn} / ${maxTurns} 回合
+[剧情摘要]: ${memory.slice(-1500)}
+</Story_Status>
+
+<Chat_History>
+${chatHistoryText}
+</Chat_History>
+
+<Current_Instruction>
+[本轮场景指令]: ${prompt || '（无特定指令，自由发挥）'}
+</Current_Instruction>
+
+# Constraints & Rules (核心规则)
+1. **内容创作**：
+   - 字数限制：严格控制在 300-500 字之间。
+   - 文风要求：模仿小说体叙事风格，描写细腻，代入感强。
+   - 逻辑一致：绝对遵守 <World_Setting> 和 <Character_Cards>，严禁人物 OOC（性格崩坏）。
+   - 主体内容：以正文描写为主，包含环境描写、心理活动、对话和动作。
+
+2. **沙盒控制 (重要)**：
+   - 这是一个"中间过程"。你的回复必须顺承[前置引导]或上一轮对话，并隐隐为流向[最终目标]做铺垫。
+   - **进度控制**：
+     - 若当前是初期回合(1-3)：侧重展开情节，给予玩家高自由度。
+     - 若当前是末期回合(接近 ${maxTurns})：开始收束剧情线索，引导玩家向 [最终目标] 的情境靠拢，但不要直接输出收束语。
+
+3. **互动反馈**：
+   - 必须响应玩家的行动意图。如果玩家的行为逻辑通顺，请予以执行并描写结果；如果玩家行为严重违背世界观，请以巧妙的叙事方式修正。
+
+4. **选项生成**：
+   - 根据当前剧情张力，在回复末尾生成 2-3 个建议行动选项。
+   - 选项不能脱离主线太远，需确保玩家选了之后，剧情依然能在未来几回合内收束。
+
+# Output Format (输出格式)
+请以 JSON 格式输出，不要包含 markdown 代码块标记：
 {
-  "text": "剧情正文（支持HTML换行<br>）...",
+  "text": "剧情正文（300-500字，小说体）...",
   "options": [
-    { "text": "选项A", "nextScene": null },
-    { "text": "选项B", "nextScene": null }
+    { "text": "选项A描述", "nextScene": null },
+    { "text": "选项B描述", "nextScene": null }
   ],
   "new_memory": "一句话概括这段剧情（用于存入长期记忆）"
 }`;
@@ -3532,6 +3881,9 @@ JSON 结构：
         function typeWriter(text) {
             const textEl = document.getElementById('gameText');
             if (!textEl) return;
+
+            // 只要有新内容输出，就标记为未保存
+            hasUnsavedChanges = true;
 
             console.log(`[typeWriter] 开始打字, 长度: ${text.length}, 前20字: ${text.substring(0, 20)}`);
 
@@ -4386,7 +4738,7 @@ JSON 结构：
             if (!file) return;
 
             const reader = new FileReader();
-            reader.onload = function (e) {
+            reader.onload = async function (e) {
                 try {
                     let json = JSON.parse(e.target.result);
                     json = adaptEditorData(json);
@@ -4395,15 +4747,46 @@ JSON 结构：
                         throw new Error("无法识别的剧本格式，请确认包含 scripts 或 main_story");
                     }
 
-                    // 添加到副本列表而非替换
+                    // 使用 IndexedDB 存储大型副本（支持 50MB+）
+                    try {
+                        // 给副本添加唯一ID
+                        if (!json.id) {
+                            json.id = Date.now();
+                        }
+
+                        await saveDungeonToDB(json);
+                        console.log('[IndexedDB] 副本已保存:', json.meta.title);
+                    } catch (dbErr) {
+                        console.warn('[IndexedDB] 保存失败:', dbErr);
+                    }
+
+                    // 同时保存到 localStorage（精简版，确保立即可见）
                     let userDungeons = [];
                     try {
                         const raw = localStorage.getItem(DUNGEONS_STORAGE);
                         if (raw) userDungeons = JSON.parse(raw) || [];
                     } catch (e) { }
 
-                    userDungeons.push(json);
-                    localStorage.setItem(DUNGEONS_STORAGE, JSON.stringify(userDungeons));
+                    // 精简大型数据
+                    const trimmedJson = JSON.parse(JSON.stringify(json));
+                    if (trimmedJson.characters) {
+                        trimmedJson.characters.forEach(c => {
+                            if (c.avatar && c.avatar.length > 5000) {
+                                c.avatar = '';
+                            }
+                        });
+                    }
+
+                    userDungeons.push(trimmedJson);
+
+                    try {
+                        localStorage.setItem(DUNGEONS_STORAGE, JSON.stringify(userDungeons));
+                    } catch (quotaErr) {
+                        if (quotaErr.name === 'QuotaExceededError') {
+                            console.warn('[localStorage] 空间不足，副本仅保存在 IndexedDB');
+                            showToastMsg('⚠️ 存储空间不足，副本仅保存在 IndexedDB');
+                        }
+                    }
 
                     // 自动选中新上传的副本
                     loadAllDungeons();
@@ -4566,6 +4949,8 @@ JSON 结构：
             document.getElementById('personaModal').style.display = 'none';
             showToastMsg("⏳ 正在生成剧情总结并存档...");
 
+
+
             // 使用 activeStoryData 确保拿到的是当前运行剧本的记忆
             const memory = activeStoryData.memory || "";
             console.log("Saving... Memory length:", memory.length);
@@ -4623,6 +5008,9 @@ JSON 结构：
             localStorage.setItem('infinite.save', JSON.stringify(saveObj));
 
             showToastMsg("✅ 存档成功！记忆已更新");
+
+            // 标记为已保存
+            hasUnsavedChanges = false;
 
             // 如果在记忆回廊页面，刷新一下
             const gallery = document.getElementById('view-gallery');
@@ -4814,7 +5202,38 @@ JSON 结构：
             if (saveBtn) saveBtn.textContent = '保存设定';
         }
 
-        function onAvatarFileChange(event) {
+        function compressImage(file, maxWidth = 500, quality = 0.7) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function (e) {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = function () {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > maxWidth) {
+                            height = Math.round(height * (maxWidth / width));
+                            width = maxWidth;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                        resolve(compressedDataUrl);
+                    };
+                    img.onerror = reject;
+                };
+                reader.onerror = reject;
+            });
+        }
+
+        async function onAvatarFileChange(event) {
             const file = event.target.files[0];
             if (!file) return;
 
@@ -4824,41 +5243,36 @@ JSON 结构：
                 return;
             }
 
-            // 限制大小
-            if (file.size > 3 * 1024 * 1024) {
-                showToastMsg('⚠️ 图片过大，建议小于 3MB');
+            // 拦截超大文件 (防止浏览器崩溃)
+            if (file.size > 15 * 1024 * 1024) {
+                showToastMsg('❌ 图片太大(>15MB)，请先选择小一点的图片');
+                return;
             }
 
-            const reader = new FileReader();
+            const preview = document.getElementById('persona-avatar-preview');
+            const placeholder = document.getElementById('persona-placeholder');
 
-            reader.onload = function (e) {
-                const preview = document.getElementById('persona-avatar-preview');
-                const placeholder = document.getElementById('persona-placeholder');
+            // 显示加载状态
+            if (placeholder) placeholder.textContent = '处理中...';
 
-                // 校验结果有效性
-                if (!e.target.result || e.target.result.length < 100) {
-                    showToastMsg('❌ 图片读取失败，可能是格式不支持');
-                    return;
-                }
+            try {
+                // 压缩图片
+                const compressedDataUrl = await compressImage(file);
 
                 if (preview) {
-                    preview.src = e.target.result;
+                    preview.src = compressedDataUrl;
                     preview.style.display = 'block';
                 }
                 if (placeholder) {
                     placeholder.style.display = 'none';
+                    placeholder.textContent = '点击上传'; // 恢复文本
                 }
-            };
+                showToastMsg('✅ 图片已压缩加载');
 
-            reader.onerror = function () {
-                showToastMsg('❌ 读取文件发生错误');
-            };
-
-            try {
-                reader.readAsDataURL(file);
             } catch (err) {
                 console.error(err);
-                showToastMsg('❌ 无法读取该文件');
+                showToastMsg('❌ 图片处理失败');
+                if (placeholder) placeholder.textContent = '点击上传';
             }
         }
 
@@ -4980,6 +5394,76 @@ JSON 结构：
                 document.head.appendChild(styleEl);
             }
             styleEl.textContent = css;
+        }
+
+        // ==========================================
+        //  世界书 RAG 检索功能
+        // ==========================================
+        /**
+         * 基于关键词匹配的 RAG 检索
+         * @param {string} query - 查询上下文（用户输入 + 最近对话）
+         * @param {number} topK - 返回的最大条目数
+         * @returns {Array} 相关的世界书条目
+         */
+        function retrieveWorldBookEntries(query, topK = 3) {
+            const wb = currentDungeon.worldBook;
+            if (!wb) return [];
+
+            // 归一化条目为统一格式
+            let entries = [];
+            if (Array.isArray(wb)) {
+                entries = wb.map(e => ({
+                    title: e.title || e.keys || e.name || '未知条目',
+                    content: e.content || e.description || e.value || ''
+                }));
+            } else if (typeof wb === 'object') {
+                Object.keys(wb).forEach(key => {
+                    const val = wb[key];
+                    let content = '';
+                    if (typeof val === 'string') content = val;
+                    else if (val && val.content) content = val.content;
+                    else if (val && val.description) content = val.description;
+                    else content = JSON.stringify(val);
+                    entries.push({ title: key, content });
+                });
+            }
+
+            if (entries.length === 0) return [];
+
+            // 简单分词 (中英文混合，过滤短词)
+            const queryTokens = query.toLowerCase()
+                .split(/[\s,.，。！？、：；""''（）\[\]【】]+/)
+                .filter(t => t.length > 1);
+
+            if (queryTokens.length === 0) return entries.slice(0, topK); // 无关键词则返回前N条
+
+            // 计算每个条目的匹配得分
+            const scored = entries.map(entry => {
+                const text = (entry.title + ' ' + entry.content).toLowerCase();
+                let score = 0;
+                queryTokens.forEach(token => {
+                    // 完全匹配加2分，部分匹配加1分
+                    if (text.includes(token)) {
+                        score += token.length > 2 ? 2 : 1;
+                    }
+                });
+                return { ...entry, score };
+            });
+
+            // 按得分排序，过滤零分，返回前K个
+            const matched = scored
+                .filter(e => e.score > 0)
+                .sort((a, b) => b.score - a.score)
+                .slice(0, topK);
+
+            // RAG 回退机制：如果没有匹配到任何条目，返回世界书的前 topK 条作为通用背景
+            if (matched.length === 0 && entries.length > 0) {
+                console.log('[RAG] 无关键词匹配，回退返回世界书前', topK, '条');
+                return entries.slice(0, topK);
+            }
+
+            console.log('[RAG] 检索到', matched.length, '条相关世界书条目');
+            return matched;
         }
 
         // ==========================================
@@ -5212,6 +5696,56 @@ JSON 结构：
                 if (input) input.value = savedCss;
                 injectCustomStyle(savedCss);
             }
+        }
+
+
+        // ==========================================
+        //  退出保护逻辑
+        // ==========================================
+        function checkExit() {
+            if (hasUnsavedChanges) {
+                showExitConfirmModal();
+            } else {
+                exitGame();
+            }
+        }
+
+        function showExitConfirmModal() {
+            // 如果已存在则显示，不存在则动态创建
+            let modal = document.getElementById('exitConfirmModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'exitConfirmModal';
+                modal.className = 'modal-overlay';
+                modal.style.display = 'none';
+                modal.style.zIndex = '9999'; // 强制最高层级
+
+                // 绑定点击事件，确保点击遮罩层能关闭
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closeExitConfirmModal();
+                    }
+                });
+
+                modal.innerHTML = `
+                    <div class="modal-card glass-panel" onclick="event.stopPropagation()" style="max-width:320px; text-align:center;">
+                        <h3 style="margin-top:0;"> 还没有存档</h3>
+                        <p style="margin:16px 0; color:var(--text-muted);">无论是去往何方，最好先带上行囊。<br>确定要直接离开吗？</p>
+                        <div style="display:flex; gap:12px; justify-content:center; flex-wrap: wrap;">
+                            <button class="menu-btn" style="background:var(--bg-card); border:1px solid rgba(255,255,255,0.1); width: 100%; margin-bottom: 8px;" onclick="closeExitConfirmModal()">我误触了</button>
+                            <button class="menu-btn" style="background:rgba(255, 50, 50, 0.2); border:1px solid rgba(255, 50, 50, 0.3); color: #ffadad;" onclick="closeExitConfirmModal(); exitGame()">直接退出</button>
+                            <button class="btn-glow" style="width:auto; padding:0 24px;" onclick="closeExitConfirmModal(); openSaveSlotModal();">去存档</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+            modal.style.display = 'flex';
+        }
+
+        function closeExitConfirmModal() {
+            const modal = document.getElementById('exitConfirmModal');
+            if (modal) modal.style.display = 'none';
         }
 
         loadCustomCss();
